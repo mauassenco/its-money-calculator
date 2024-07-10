@@ -13,7 +13,7 @@ import {
 } from "./ui/card";
 import { Input } from "./ui/input";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { ArrowRight, Check, CheckCircle2Icon, DollarSignIcon, LogOut } from "lucide-react";
+import { ArrowRight, Check, CheckCircle2Icon, CloudCog, DollarSignIcon, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Label } from "@radix-ui/react-label";
 import parse from 'html-react-parser';
@@ -24,7 +24,7 @@ import { SheetClose } from "./ui/sheet";
 import { Separator } from "@radix-ui/react-separator";
 // import { Progress, ProgressIndicator } from "@radix-ui/react-progress";
 import { Progress } from "./ui/progress";
-import { calculateCompoundInterest } from "../_lib/functions";
+import { calculateCompoundInterest, formatNumberWithSeparators } from "../_lib/functions";
 
 
 export function CardWithForm() {
@@ -68,7 +68,7 @@ export function CardWithForm() {
     age: number,
     retire_age: number,
     initial_investment: number,
-    month_investment: number,
+    monthly_investment: number,
     gender: string,
     investidor_profile: string,
   }
@@ -99,11 +99,12 @@ export function CardWithForm() {
   const steps = acfEtapas?.etapas ?? [];
 
   const [formStep, setFormStep] = useState(0);
-  const [formData, setFormData] = useState({});
+  // const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState<Record<string, unknown>>({});
   const [clientName, setClientName] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
-
+  const [myData, setmyData] = useState({});
 
   const handleChange = (event: any) => {
     const { name, value } = event.target;
@@ -126,20 +127,25 @@ export function CardWithForm() {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     setIsSubmitted(true);
+
     const retireAge = Number(formData.retire_age)
     const userAge = Number(formData.age)
     const monthlyInvestiment = Number(formData.monthly_investment)
     const initialInvestiment = Number(formData.initial_investment)
 
-    const interestRate = 0.33
+    const monthlyinflation = 0.33
+    const monthlyInterest = 1
+    // const period = retireAge - userAge
+
     const timePeriod = retireAge - userAge;
 
-    const amountDeposited = Number((monthlyInvestiment * timePeriod * 12) + initialInvestiment).toFixed(2)
+    const amountDeposited = Number((monthlyInvestiment * timePeriod * 12) + initialInvestiment)
 
-    const totalEarned = Number(calculateCompoundInterest(initialInvestiment, interestRate, timePeriod)).toFixed(2)
+    const totalInflationAdjusted = (initialInvestiment * (Math.pow((1 + monthlyInterest), timePeriod)))
 
+    // const totalEarned = formatNumberWithSeparators(Number(totalInflationAdjusted))
 
-    const simulationData = { ...formData, totalEarned, amountDeposited }
+    const simulationData = { ...formData, totalInflationAdjusted, amountDeposited }
 
     let storedData = JSON.parse(window.sessionStorage.getItem('Simulações') || '[]');
     storedData.push({ randomUUID, simulationData });
@@ -193,7 +199,7 @@ export function CardWithForm() {
             <Card className=" shadow-cst3 mb-10 flex w-full flex-col overflow-hidden" >
               {
                 steps.map((step, index: number) => (
-                  <CardContent className={
+                  <CardContent key={index} className={
                     cn({
                       'hidden': formStep !== index,
                     })}>

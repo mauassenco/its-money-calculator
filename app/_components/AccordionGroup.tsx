@@ -1,10 +1,4 @@
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "./ui/accordion";
 
 type AccordionItems = {
   accordion_item_question?: string;
@@ -34,31 +28,12 @@ const AccordionGroup = ({
         </h3>
       </div>
 
-      {/*   <Accordion
-        type="single"
-        collapsible
-        className="mx-4 my-12 rounded bg-white"
-      >
-     {items?.map((itm, index) => (
-          <AccordionItem
-            value={`item-${index}`}
-            className="rounded"
-            key={index}
-          >
-            <AccordionTrigger className="font-semibold no-underline">
-              {itm.accordion_item_question}
-            </AccordionTrigger>
-            <AccordionContent className="px-4">
-              {itm.accordion_item_answer}
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion> */}
-      <div className="px-4 pb-10">
 
-        <div className="bg-[#fff] px-4 rounded">
+      <div className="px-4 pb-10 ">
+
+        <div className="bg-[#fff] px-4 rounded" >
           {items?.map((itm, index) => (
-            <div className="collapse collapse-plus bg-white rounded-none border-b py-2">
+            <div className="collapse collapse-plus bg-white rounded-none border-b py-2" key={index}>
               <input type="radio" name="my-accordion-3" />
               <div className="collapse-title text-[#131415] text-[18px] font-bold leading-6 pb-[2px]]"> {itm.accordion_item_question}</div>
               <div className="collapse-content font-[14px] font-normal leading-[22px] text-[#27272B]">

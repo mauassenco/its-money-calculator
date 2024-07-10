@@ -23,7 +23,7 @@ import PlusIconCustom from "./icons/PlusIconCustom"
 import HandOnFile from "./icons/HandOnFile"
 import { useState } from "react"
 import { randomUUID } from "crypto"
-import { checkNumberType } from "../_lib/functions"
+import { checkNumberType, formatNumberWithSeparators } from "../_lib/functions"
 
 
 type Simulation = {
@@ -40,6 +40,7 @@ type Simulation = {
     amountDeposited?: number;
     investimentTimeInMonths?: number;
     totalEarned?: number;
+    totalInflationAdjusted?: number;
 
   };
 };
@@ -88,7 +89,7 @@ export function SimulationResult() {
               <MoneyBagIcon />
               <div className="flex gap-2">
                 <h3 className="text-[32px] leading-9 flex gap-1.5 font-Big_Shoulders_Text font-bold"><span>R$</span>
-                  {sessionSimulations[sessionSimulations.length - 1].simulationData.amountDeposited}
+                  {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.amountDeposited))}
                   <span className="uppercase">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></h3>
               </div>
             </CardTitle>
@@ -120,7 +121,7 @@ export function SimulationResult() {
                 </div>
                 <div>
                   <p className="text-center text-[15px]">Na poupança você teria acumulado aproximadamente</p>
-                  <p className="font-bold text-[16px] mt-4 text-center"><span className="mr-[3px]">R$</span>{sessionSimulations[sessionSimulations.length - 1].simulationData.amountDeposited}<span className="ml-[3px]">mil</span></p>
+                  <p className="font-bold text-[16px] mt-4 text-center"><span className="mr-[3px]">R$</span>{formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.totalInflationAdjusted))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></p>
                 </div>
               </div>
 
@@ -140,7 +141,7 @@ export function SimulationResult() {
             <CardTitle className="flex justify-center items-center gap-6 ">
               <MoneyBagIcon />
               <div className="flex gap-2">
-                <h3 className="text-[32px] leading-9 flex gap-1.5 font-Big_Shoulders_Text font-bold"><span>R$</span> {sessionSimulations[sessionSimulations.length - 1].simulationData.amountDeposited}<span className="uppercase">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></h3>
+                <h3 className="text-[32px] leading-9 flex gap-1.5 font-Big_Shoulders_Text font-bold"><span>R$</span> {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.amountDeposited))}<span className="uppercase">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></h3>
               </div>
             </CardTitle>
             <CardDescription className="text-[17px] text-center leading-7 p-0 m-0">Valor total na <strong>Previdência Privada</strong>
@@ -155,7 +156,7 @@ export function SimulationResult() {
                   <PigSafeIcon />
                 </div>
                 <div>
-                  <p className="mb-4 font-bold text-[16px] text-center"><span className="mr-[3px]">R$</span> {sessionSimulations[sessionSimulations.length - 1].simulationData.amountDeposited}<span className="ml-[3px]">mil</span></p>
+                  <p className="mb-4 font-bold text-[16px] text-center"><span className="mr-[3px]">R$</span> {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.amountDeposited))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></p>
                   <p className="text-center text-[15px]">Poupança</p>
                 </div>
               </div>
@@ -169,7 +170,7 @@ export function SimulationResult() {
                   <HandOnFile />
                 </div>
                 <div>
-                  <p className="mb-4 font-bold text-[16px] text-center"><span className="mr-[3px]">R$</span> {sessionSimulations[sessionSimulations.length - 1].simulationData.amountDeposited}<span className="ml-[3px]">milhões</span></p>
+                  <p className="mb-4 font-bold text-[16px] text-center"><span className="mr-[3px]">R$</span> {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.amountDeposited))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></p>
                   <p className="text-center text-[15px] text-nowrap">Previdência Privada</p>
                 </div>
               </div>
@@ -209,7 +210,8 @@ export function SimulationResult() {
             </div>
           </div>
           <div className="rounded flex flex-col items-center border border-highlight w-[50%] bg-white p-4 gap-4">
-            <div className="w-12 h-12" onClick={() => document.getElementById('new_simulation').showModal()}>
+            {/* <div className="w-12 h-12" onClick={() => document.getElementById('new_simulation').showModal()}> */}
+            <div className="w-12 h-12">
               <PlusIconCustom />
             </div>
             <div className="text-center font-bold leading-5 text-[16px]">
@@ -228,18 +230,18 @@ export function SimulationResult() {
 
             <div className="collapse-content rounded space-y-4">
 
-              {sessionSimulations.map(simulation => (
-                <div className="p-4 border-highlight border rounded space-y-6">
-                  <h3 className="font-bold text-[18px] flex items-center"><span className="bg-highlight rounded-full w-[7px] h-[7px] mr-[6px]"></span>{simulation.simulationData.amountDeposited} <span className="mx-[2px]">Mil</span>(previdência)</h3>
+              {sessionSimulations.map((simulation, index) => (
+                <div className="p-4 border-highlight border rounded space-y-6" key={index}>
+                  <h3 className="font-bold text-[18px] flex items-center"><span className="bg-highlight rounded-full w-[7px] h-[7px] mr-[6px]"></span>{simulation.simulationData.amountDeposited} <span className="mx-[2px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span>(previdência)</h3>
                   <p className="text-[15px]">Aposentar aos: <span className="font-bold">{simulation.simulationData.retire_age}anos</span></p>
                   <div className="flex">
                     <div className="space-y-4 w-1/2">
-                      <p className="font-bold text-[16px] leading-5"><span className="mr-[3px]">R$</span>{simulation.simulationData.amountDeposited}<span className="ml-[3px]">mil</span></p>
+                      <p className="font-bold text-[16px] leading-5"><span className="mr-[3px]">R$</span>{simulation.simulationData.amountDeposited}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></p>
                       <p className="text-[#EE3939] text-[15px] leading-6">INSS</p>
                     </div>
 
                     <div className="space-y-4 w-1/2 pl-6 border-[#E5E5E7] border-l-[1px]">
-                      <p className="font-bold text-[16px] leading-5"><span className="mr-[3px]">R$</span> {sessionSimulations[sessionSimulations.length - 1].simulationData.amountDeposited}<span className="ml-[3px]">mil</span></p>
+                      <p className="font-bold text-[16px] leading-5"><span className="mr-[3px]">R$</span> {sessionSimulations[sessionSimulations.length - 1].simulationData.amountDeposited}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></p>
                       <p className="text-[15px] leading-6">Poupança</p>
                     </div>
                   </div>

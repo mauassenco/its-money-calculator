@@ -23,7 +23,7 @@ export const calculateCompoundInterest = (principal: number, interestRate: numbe
   const totalInterestEarned = finalAmount - principal;
 
   return {
-    totalInterestEarned: totalInterestEarned.toFixed(2), // Round to two decimal places
+    totalInterestEarned: totalInterestEarned, // Round to two decimal places
   };
 };
 
@@ -40,31 +40,23 @@ export const checkNumberType = (value:number) => {
   }
 };
 
-export const formatNumberWithSeparators = (number) => {
-  if (isNaN(number)) {
-    throw new Error('Invalid input: Please provide a valid number.');
+export const formatNumberWithSeparators = (number: number) => {
+
+  // Format the number with thousands separators (pt-BR locale)
+  const formattedNumber = number.toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+
+  // Split the formatted number at the decimal point
+  const [integerPart, fractionalPart] = formattedNumber.split('.');
+
+  // Extract the desired numbers
+  const extractedInteger = integerPart.replace(/,/g, ''); // Remove separators
+  const extractedDecimalDigit = fractionalPart ? fractionalPart[0] : '0'; // Handle cases without decimals
+
+  // Combine and return the extracted numbers
+  // return `${extractedInteger}.${extractedDecimalDigit}`;
+  if (extractedDecimalDigit == '0') {
+   return extractedInteger
   }
-
-  // Convert the number to a string
-  const numberString = number.toFixed(2).toString();
-
-  // Check if it's a negative number
-  const isNegative = numberString.startsWith('-');
-
-  // Remove the negative sign if present
-  const absoluteNumberString = isNegative ? numberString.slice(1) : numberString;
-
-  // Split the number into an integer part and a fractional part (if any)
-  const [integerPart, fractionalPart] = absoluteNumberString.split(',');
-
-  // Format the integer part with thousands separators
-  const formattedIntegerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-  // Combine the formatted integer part and fractional part (if any)
-  let formattedNumber = isNegative ? `-${formattedIntegerPart}` : formattedIntegerPart;
-  if (fractionalPart) {
-    formattedNumber += `.${fractionalPart}`;
-  }
-
-  return formattedNumber;
-}
+  
+  return `${extractedInteger}.${extractedDecimalDigit}`
+};

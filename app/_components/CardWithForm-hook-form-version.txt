@@ -25,14 +25,12 @@ import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-// import { registerSchema } from "../validator/auth";
-import { z } from "zod"
+import { any, z, ZodAnyDef, ZodParsedType, ZodSchema, ZodType, ZodTypeAny } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { registerSchema } from "../validator/auth";
-import { convertToLowerCamelCase } from "../_lib/functions";
-
 
 type Input = z.infer<typeof registerSchema>
+
 
 export function CardWithForm() {
   type Steps = {
@@ -51,9 +49,10 @@ export function CardWithForm() {
     texto_do_placeholder?: string;
     opcoes_de_resposta?: RadioOptions[];
     opcoes_de_a_b?: AB_Options[];
+    alias_do_campo?: string;
   };
 
-  type QuestionType = "string" | "number" | "A/B" | "Múltipla Escolha";
+  type QuestionType = "Texto" | "Número" | "A/B" | "Múltipla Escolha";
 
   type RadioOptions = {
     opcao_de_resposta_multipla?: string;
@@ -70,7 +69,6 @@ export function CardWithForm() {
   const [acfEtapas, setAcfEtapas] = useState<StepsData>();
 
   const [formStep, setFormStep] = useState(0);
-
 
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -101,36 +99,16 @@ export function CardWithForm() {
   }, []);
 
   const steps = acfEtapas?.etapas ?? [];
-  const questionFields = []
 
-  const bd = () => {
-    steps.map((item) => {
-      item.questoes_da_etapa.forEach(
-        item => console.log(convertToLowerCamelCase(item.questao.texto_da_questao)))
-    })
-  }
 
-  bd();
 
-  // const questionFields = [
-  //   {
-  //     name: "foo",
-  //     fieldType: z.string(),
-  //   },
-  // ]
-
-  // const registerNewSchema = z.object(
-  //   Object.fromEntries(
-  //     questionFields.map((field) => [field.name, field.fieldType])
-  //   )
-  // )
 
   return (
 
     <Card className="shadow-cst3 mb-10 flex w-full flex-col" >
       {
         steps.map((step, index) => (
-          <CardContent>
+          <CardContent key={index}>
             <CardHeader>
               <CardTitle className="font-bold">{step.titulo_da_etapa}</CardTitle>
               <CardDescription>{step.texto_da_etapa}</CardDescription>
@@ -141,7 +119,7 @@ export function CardWithForm() {
                 <div className="grid w-full items-center gap-4">
                   {step.questoes_da_etapa.map((question) => {
                     switch (question.questao.tipo_da_questao) {
-                      case "string":
+                      case "Texto":
                         return (
                           <div
                             className="flex flex-wrap items-center gap-[8px]"
@@ -149,10 +127,10 @@ export function CardWithForm() {
                           >
                             <FormField
                               control={form.control}
-                              name='name'
+                              name={`"${question.questao.alias_do_campo}"`}
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel htmlFor={question.questao.texto_da_questao}> {question.questao.texto_da_questao}</FormLabel>
+                                  <FormLabel htmlFor={question.questao.texto_da_questao}> {question.questao.texto_da_questao} </FormLabel>
                                   <FormControl>
                                     <Input placeholder={question.questao.texto_do_placeholder} {...field} />
                                   </FormControl>
@@ -162,7 +140,7 @@ export function CardWithForm() {
                             />
                           </div>
                         );
-                      case "number":
+                      case "Número":
                         return (
                           <div
                             className="flex flex-wrap items-center gap-[8px]"
@@ -170,7 +148,7 @@ export function CardWithForm() {
                           >
                             <FormField
                               control={form.control}
-                              name='age'
+                              name={question.questao.alias_do_campo}
                               render={({ field }) => (
                                 <FormItem>
                                   <FormLabel htmlFor={question.questao.texto_da_questao}> {question.questao.texto_da_questao}</FormLabel>
@@ -244,7 +222,7 @@ export function CardWithForm() {
                                       defaultValue={field.value}>
                                       {question.questao.opcoes_de_resposta?.map(
                                         (radio_item, index) => (
-                                          <div className="radio-item flex items-center gap-4 space-x-2 rounded-sm border bg-white px-4 py-5">
+                                          <div className="radio-item flex items-center gap-4 space-x-2 rounded-sm border bg-white px-4 py-5" key={index}>
                                             <FormItem  >
                                               <FormControl  >
                                                 <RadioGroupItem
@@ -272,6 +250,10 @@ export function CardWithForm() {
                     }
                   })}
                 </div>
+                <Button type='submit' className="h-[56px] w-full bg-highlight text-base font-bold text-black">
+                  Ok
+                  <Check width={18} height={18} className="ml-1.5" />
+                </Button>
               </form >
             </Form >
           </CardContent >
@@ -279,10 +261,10 @@ export function CardWithForm() {
         ))
       }
       < CardFooter className="flex w-full items-center justify-between pt-[34px]" >
-        <Button className="h-[56px] w-full bg-highlight text-base font-bold text-black">
+        {/* <Button className="h-[56px] w-full bg-highlight text-base font-bold text-black">
           Ok
           <Check width={18} height={18} className="ml-1.5" />
-        </Button>
+        </Button> */}
       </CardFooter >
     </Card >
 
