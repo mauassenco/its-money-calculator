@@ -2,32 +2,236 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Big Shoulders Text";
+  src: url("../app/fonts/BigShouldersText.ttf");
+}
+
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --background: 0 0% 96%;
+  --foreground: 0 0% 20%;
+  --card: 356 50% 100%;
+  --card-foreground: 356 5% 15%;
+  --popover: 356 100% 100%;
+  --popover-foreground: 356 100% 10%;
+  --primary: 356 83% 51.6%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 356 30% 90%;
+  --secondary-foreground: 0 0% 0%;
+  --muted: 318 30% 95%;
+  --muted-foreground: 225 8% 53%;
+  --accent: 318 30% 90%;
+  --accent-foreground: 356 5% 15%;
+  --destructive: 0 100% 50%;
+  --destructive-foreground: 356 5% 100%;
+  --border: 356 30% 82%;
+  --input: 356 30% 50%;
+  --ring: 356 83% 51.6%;
+  --radius: 0.75rem;
+  --g-cta-primary-light: 180 100% 45%;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+.dark {
+  --background: 356 50% 10%;
+  --foreground: 356 5% 100%;
+  --card: 356 50% 10%;
+  --card-foreground: 356 5% 100%;
+  --popover: 356 50% 5%;
+  --popover-foreground: 356 5% 100%;
+  --primary: 356 83% 51.6%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 356 30% 20%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 318 30% 25%;
+  --muted-foreground: 225 8% 53%;
+  --accent: 318 30% 25%;
+  --accent-foreground: 356 5% 95%;
+  --destructive: 0 100% 50%;
+  --destructive-foreground: 356 5% 100%;
+  --border: 356 30% 50%;
+  --input: 356 30% 50%;
+  --ring: 356 83% 51.6%;
+  --radius: 0.75rem;
+  --g-cta-primary-light: 180 100% 45%;
+}
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  body {
+    @apply text-foreground antialiased;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
+.geeks {
+  background-image: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 1) 14.59%,
+    rgba(0, 0, 0, 0.01) 100%
+  );
+  background-repeat: no-repeat;
+  background-position: top center;
+  width: 100%;
+}
+
+.geeks-b {
   background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    0deg,
+    #f2ffff 14.59%,
+    rgba(242, 255, 255, 0) 100%
+  );
+  background-repeat: no-repeat;
+  background-position: top center;
+  width: 100%;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+.drops {
+  box-shadow: 0px 2px 10px 0px rgba(22, 25, 38, 0.06),
+    0px 8px 40px 0px rgba(22, 25, 38, 0.08);
+}
+
+.container {
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@media (min-width: 576px) {
+  .container {
+    max-width: 540px;
   }
 }
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1320px;
+  }
+}
+
+.bxd {
+  box-shadow: -6px 8px 0px 0px #0cc;
+}
+
+.bxs-sm{
+  box-shadow: -2px 2px 0px 0px #0CC;
+}
+
+.bsx-sm-v2{
+  border: 1px solid  #E5E5E7;
+  box-shadow: -2px 2px 0px 0px #0CC;
+}
+
+.bxd-header {
+  box-shadow: 0px 2px 10px 0px rgba(22, 25, 38, 0.06),
+    0px 8px 40px 0px rgba(22, 25, 38, 0.08);
+}
+
+.radio-item:has(> button[data-state="checked"]) {
+  border: 1px solid #0cc;
+  box-shadow: -2px 2px 0px 0px #0cc;
+}
+
+.ab-item button[data-state="checked"] ~ label {
+  border: 1px solid #0cc;
+  color: #000;
+  padding: 0.75rem;
+}
+
+
+.collapse-title {
+  display: flex;
+  align-items: center;
+}
+
+.collapse-plus > .collapse-title:after, .collapse-plus > .collapse-title:after  {
+  content: '' !important;
+}
+
+.collapse-plus > .collapse-title:before {
+  display: inline-block;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  transition-duration: 300ms;
+  content: url("/assets/images/add_box.svg") !important;
+  background-size: cover;
+  pointer-events: none;
+  margin-right: 12px;
+  padding-top: 6px;
+
+}
+
+.collapse[open].collapse-plus > .collapse-title:before,
+.collapse-open.collapse-plus > .collapse-title:before,
+.collapse-plus:focus:not(.collapse-close) > .collapse-title:before,
+.collapse-plus:not(.collapse-close) > input[type="checkbox"]:checked ~ .collapse-title:before,
+.collapse-plus:not(.collapse-close) > input[type="radio"]:checked ~ .collapse-title:before {
+  content: url("/assets/images/indeterminate_check_box.svg") !important;
+  background-size: cover;
+}
+.collapse[open].collapse-plus > .collapse-title:before,
+.collapse-open.collapse-plus > .collapse-title:before,
+.collapse-plus:focus:not(.collapse-close) > .collapse-title:before,
+.collapse-plus:not(.collapse-close) > input[type="checkbox"]:checked ~ .collapse-title:before,
+.collapse-plus:not(.collapse-close) > input[type="radio"]:checked ~ .collapse-title:before {
+  content: url("/assets/images/indeterminate_check_box.svg") !important;
+  background-size: cover;
+  
+}
+.collapse[open].collapse-plus > .collapse-title:before,
+.collapse-open.collapse-plus > .collapse-title:before,
+.collapse-plus:focus:not(.collapse-close) > .collapse-title:before,
+.collapse-plus:not(.collapse-close) > input[type="checkbox"]:checked ~ .collapse-title:before,
+.collapse-plus:not(.collapse-close) > input[type="radio"]:checked ~ .collapse-title:before {
+  content: url("/assets/images/indeterminate_check_box.svg") !important;
+  background-size: cover;
+}
+.collapse[open].collapse-plus > .collapse-title:before,
+.collapse-open.collapse-plus > .collapse-title:before,
+.collapse-plus:focus:not(.collapse-close) > .collapse-title:before,
+.collapse-plus:not(.collapse-close) > input[type="checkbox"]:checked ~ .collapse-title:before,
+.collapse-plus:not(.collapse-close) > input[type="radio"]:checked ~ .collapse-title:before {
+  content: url("/assets/images/indeterminate_check_box.svg") !important;
+  background-size: cover;
+}
+.collapse[open].collapse-plus > .collapse-title:before,
+.collapse-open.collapse-plus > .collapse-title:before,
+.collapse-plus:focus:not(.collapse-close) > .collapse-title:before,
+.collapse-plus:not(.collapse-close) > input[type="checkbox"]:checked ~ .collapse-title:before,
+.collapse-plus:not(.collapse-close) > input[type="radio"]:checked ~ .collapse-title:before {
+  content: url("/assets/images/indeterminate_check_box.svg") !important;
+  background-size: cover;
+}
+/* 
+.progress-primary::-moz-progress-bar {
+  border-radius: var(--rounded-box, 1rem 16px);
+  --tw-bg-opacity: 1;
+  background-color: 'green'!important;
+}
+.progress-primary:indeterminate {
+  --progress-color: 'red' !important;
+}
+.progress-primary::-webkit-progress-value {
+  --tw-bg-opacity: 1;
+  background-color: 'yellow'!important;
+} */
