@@ -13,20 +13,6 @@ export const convertToLowerCamelCase = (text: string) => {
   return concatText;
 };
 
-export const calculateCompoundInterest = (principal: number, interestRate: number, timePeriod: number) => {
-  interestRate /= 100;
-
-  const totalPeriods = timePeriod * 12;
-
-  const finalAmount = principal * ( Math.pow((1 + interestRate ), totalPeriods));
-
-  const totalInterestEarned = finalAmount - principal;
-
-  return {
-    totalInterestEarned: totalInterestEarned, // Round to two decimal places
-  };
-};
-
 export const checkNumberType = (value:number) => {
   if (value >= 1000 && value < 1000000) {
     return 'mil';
@@ -60,3 +46,8 @@ export const formatNumberWithSeparators = (number: number) => {
   
   return `${extractedInteger}.${extractedDecimalDigit}`
 };
+
+
+
+
+

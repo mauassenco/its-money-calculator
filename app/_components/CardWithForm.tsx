@@ -7,7 +7,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "./ui/card";
@@ -22,9 +21,7 @@ import SimulationResult from "./SimulationResult";
 import { randomUUID } from "crypto";
 import { SheetClose } from "./ui/sheet";
 import { Separator } from "@radix-ui/react-separator";
-// import { Progress, ProgressIndicator } from "@radix-ui/react-progress";
 import { Progress } from "./ui/progress";
-import { calculateCompoundInterest, formatNumberWithSeparators } from "../_lib/functions";
 
 
 export function CardWithForm() {
@@ -133,25 +130,33 @@ export function CardWithForm() {
     const monthlyInvestiment = Number(formData.monthly_investment)
     const initialInvestiment = Number(formData.initial_investment)
 
-    const monthlyinflation = 0.33
-    const monthlyInterest = 1
+    const monthlyInterestRate = 0.0033;
+    const monthlyInflationRate = 0.04 / 12;
+    const monthlyInterestPrivate = 1;
+
     // const period = retireAge - userAge
 
     const timePeriod = retireAge - userAge;
+    const timePeriodMonths = timePeriod * 12
 
     const amountDeposited = Number((monthlyInvestiment * timePeriod * 12) + initialInvestiment)
 
-    const totalInflationAdjusted = (initialInvestiment * (Math.pow((1 + monthlyInterest), timePeriod)))
+    const totalInflationAdjusted = (initialInvestiment * Math.pow(1 + monthlyInterestRate, timePeriodMonths)) + (monthlyInvestiment * (((Math.pow(1 + monthlyInterestRate, timePeriodMonths)) / monthlyInterestRate)))
+    // 500 * (1 + 0.00275) ^ (468)
+
+    const totalPrivate = (initialInvestiment * Math.pow(1 + monthlyInterestPrivate, timePeriodMonths)) + (monthlyInvestiment * (((Math.pow(1 + monthlyInterestPrivate, timePeriodMonths)) / monthlyInterestPrivate)))
 
     // const totalEarned = formatNumberWithSeparators(Number(totalInflationAdjusted))
 
-    const simulationData = { ...formData, totalInflationAdjusted, amountDeposited }
+    const simulationData = { ...formData, totalInflationAdjusted, amountDeposited, totalPrivate }
 
     let storedData = JSON.parse(window.sessionStorage.getItem('Simulações') || '[]');
+
     storedData.push({ randomUUID, simulationData });
     window.sessionStorage.setItem('Simulações', JSON.stringify(storedData));
+    window.sessionStorage.setItem('Idade', JSON.stringify(userAge));
 
-    alert(JSON.stringify(simulationData, null, 4))
+    // alert(JSON.stringify(simulationData, null, 4))
   };
 
 
@@ -357,3 +362,7 @@ export function CardWithForm() {
   );
 }
 export default CardWithForm;
+function calculateFinalInvestment(initialInvestiment: number) {
+  throw new Error("Function not implemented.");
+}
+

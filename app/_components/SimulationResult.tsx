@@ -1,4 +1,4 @@
-import { ChevronLeft, LogOut, PlusIcon, XIcon } from "lucide-react"
+import { ChevronLeft, XIcon } from "lucide-react"
 import { Button } from "../_components/ui/button"
 import {
   Card,
@@ -21,7 +21,7 @@ import CallAttendantIcon from "./icons/CallAttendantIcon"
 import WhatssappIcon from "./icons/WhatssappIcon"
 import PlusIconCustom from "./icons/PlusIconCustom"
 import HandOnFile from "./icons/HandOnFile"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { randomUUID } from "crypto"
 import { checkNumberType, formatNumberWithSeparators } from "../_lib/functions"
 
@@ -41,6 +41,7 @@ type Simulation = {
     investimentTimeInMonths?: number;
     totalEarned?: number;
     totalInflationAdjusted?: number;
+    totalPrivate?: number
 
   };
 };
@@ -61,10 +62,35 @@ export function SimulationResult() {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    const simulationData = { ...formDataNew }
+    const simulationDataItemsNew = sessionSimulations[sessionSimulations.length - 1].simulationData
+    const userPrevAge = Number(sessionStorage.getItem('Idade'));
+
+    const retireAge = Number(simulationDataItemsNew.retire_age)
+    const monthlyInvestiment = Number(simulationDataItemsNew.monthly_investment)
+    const initialInvestiment = Number(simulationDataItemsNew.initial_investment)
+
+    const monthlyInterestRate = 0.0033;
+    const monthlyInflationRate = 0.04 / 12;
+    const monthlyInterestPrivate = 1;
+
+    const timePeriod = retireAge - userPrevAge;
+    const timePeriodMonths = timePeriod * 12
+
+    const amountDeposited = Number((monthlyInvestiment * timePeriod * 12) + initialInvestiment)
+
+    const totalInflationAdjusted = (initialInvestiment * Math.pow(1 + monthlyInterestRate, timePeriodMonths)) + (monthlyInvestiment * (((Math.pow(1 + monthlyInterestRate, timePeriodMonths)) / monthlyInterestRate)))
+    // 500 * (1 + 0.00275) ^ (468)
+
+    const totalPrivate = (initialInvestiment * Math.pow(1 + monthlyInterestPrivate, timePeriodMonths)) + (monthlyInvestiment * (((Math.pow(1 + monthlyInterestPrivate, timePeriodMonths)) / monthlyInterestPrivate)))
+
+    const simulationData = { ...formDataNew, amountDeposited, totalInflationAdjusted, totalPrivate }
     let storedData = JSON.parse(window.sessionStorage.getItem('Simulações') || '[]');
+
     storedData.push({ randomUUID, simulationData });
     window.sessionStorage.setItem('Simulações', JSON.stringify(storedData));
+    const form = e.target as HTMLFormElement; // Get the form element from the event object
+    form.reset();
+    document.getElementById('close-x')?.click()
   };
 
 
@@ -141,7 +167,8 @@ export function SimulationResult() {
             <CardTitle className="flex justify-center items-center gap-6 ">
               <MoneyBagIcon />
               <div className="flex gap-2">
-                <h3 className="text-[32px] leading-9 flex gap-1.5 font-Big_Shoulders_Text font-bold"><span>R$</span> {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.amountDeposited))}<span className="uppercase">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></h3>
+                <h3 className="text-[32px] leading-9 flex gap-1.5 font-Big_Shoulders_Text font-bold"><span>R$</span> {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.totalPrivate))}<span className="uppercase">{checkNumberType(Number(simulationDataItems.amountDeposited))}
+                </span></h3>
               </div>
             </CardTitle>
             <CardDescription className="text-[17px] text-center leading-7 p-0 m-0">Valor total na <strong>Previdência Privada</strong>
@@ -156,7 +183,7 @@ export function SimulationResult() {
                   <PigSafeIcon />
                 </div>
                 <div>
-                  <p className="mb-4 font-bold text-[16px] text-center"><span className="mr-[3px]">R$</span> {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.amountDeposited))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></p>
+                  <p className="mb-4 font-bold text-[16px] text-center"><span className="mr-[3px]">R$</span> {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.totalInflationAdjusted))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></p>
                   <p className="text-center text-[15px]">Poupança</p>
                 </div>
               </div>
@@ -170,7 +197,7 @@ export function SimulationResult() {
                   <HandOnFile />
                 </div>
                 <div>
-                  <p className="mb-4 font-bold text-[16px] text-center"><span className="mr-[3px]">R$</span> {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.amountDeposited))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></p>
+                  <p className="mb-4 font-bold text-[16px] text-center"><span className="mr-[3px]">R$</span> {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.totalPrivate))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></p>
                   <p className="text-center text-[15px] text-nowrap">Previdência Privada</p>
                 </div>
               </div>
@@ -186,7 +213,7 @@ export function SimulationResult() {
       <Card>
         <div className="bg-highlight rounded py-8 px-4 m-5">
           <div className="flex m-0 p-0 gap-6">
-            <div className="w-12 h-12">
+            <div className="w-12 h-12" id="attendant">
               <CallAttendantIcon />
             </div>
             <div className="text-[15px] leading-6">
@@ -209,16 +236,22 @@ export function SimulationResult() {
               <p>Quero receber os resultados pelo WhatsApp</p>
             </div>
           </div>
-          <div className="rounded flex flex-col items-center border border-highlight w-[50%] bg-white p-4 gap-4">
-            {/* <div className="w-12 h-12" onClick={() => document.getElementById('new_simulation').showModal()}> */}
-            <div className="w-12 h-12">
-              <PlusIconCustom />
-            </div>
-            <div className="text-center font-bold leading-5 text-[16px]">
-              <p>Fazer uma nova simulação</p>
-            </div>
-          </div>
 
+          <div className="rounded flex flex-col items-center border border-highlight w-[50%] bg-white p-4 gap-4 ">
+
+            <label htmlFor="new_simulation" className="flex flex-col items-center gap-4 bg-white border-none hover:bg-white" >
+              <div className="w-12 h-12">
+                <PlusIconCustom />
+              </div>
+              <div className="text-center font-bold leading-5 text-[16px] text-black">
+                <p>Fazer uma nova simulação</p>
+              </div>
+            </label>
+
+
+
+
+          </div>
         </div>
       </Card>
 
@@ -230,38 +263,24 @@ export function SimulationResult() {
 
             <div className="collapse-content rounded space-y-4">
 
-              {sessionSimulations.map((simulation, index) => (
+              {sessionSimulations.slice().reverse().map((simulation, index) => (
                 <div className="p-4 border-highlight border rounded space-y-6" key={index}>
-                  <h3 className="font-bold text-[18px] flex items-center"><span className="bg-highlight rounded-full w-[7px] h-[7px] mr-[6px]"></span>{simulation.simulationData.amountDeposited} <span className="mx-[2px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span>(previdência)</h3>
-                  <p className="text-[15px]">Aposentar aos: <span className="font-bold">{simulation.simulationData.retire_age}anos</span></p>
+                  <h3 className="font-bold text-[18px] flex items-center"><span className="bg-highlight rounded-full w-[7px] h-[7px] mr-[6px]"></span> {formatNumberWithSeparators(Number(simulation.simulationData.amountDeposited))}<span className="mx-[2px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span>(previdência)</h3>
+                  <p className="text-[15px]">Aposentar aos: <span className="font-bold">{simulation.simulationData.retire_age}{' '}anos</span></p>
                   <div className="flex">
                     <div className="space-y-4 w-1/2">
-                      <p className="font-bold text-[16px] leading-5"><span className="mr-[3px]">R$</span>{simulation.simulationData.amountDeposited}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></p>
+                      <p className="font-bold text-[16px] leading-5"><span className="mr-[3px]">R$</span>{formatNumberWithSeparators(Number(simulation.simulationData.amountDeposited))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></p>
                       <p className="text-[#EE3939] text-[15px] leading-6">INSS</p>
                     </div>
 
                     <div className="space-y-4 w-1/2 pl-6 border-[#E5E5E7] border-l-[1px]">
-                      <p className="font-bold text-[16px] leading-5"><span className="mr-[3px]">R$</span> {sessionSimulations[sessionSimulations.length - 1].simulationData.amountDeposited}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></p>
+                      <p className="font-bold text-[16px] leading-5"><span className="mr-[3px]">R$</span> {formatNumberWithSeparators(Number(simulation.simulationData.totalInflationAdjusted))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></p>
                       <p className="text-[15px] leading-6">Poupança</p>
                     </div>
                   </div>
                 </div>
               ))}
-              {/* <div className="p-4 border-highlight border rounded space-y-6">
-                <h3 className="font-bold text-[18px]">4 milhões (previdência)</h3>
-                <p className="text-[15px]">Aposentar aos: <span className="font-bold">65 anos</span></p>
-                <div className="flex">
-                  <div className="space-y-4 w-1/2">
-                    <p className="font-bold text-[16px] leading-5"><span className="mr-[3px]">R$</span>230<span className="ml-[3px]">mil</span></p>
-                    <p className="text-[#EE3939] text-[15px] leading-6">INSS</p>
-                  </div>
 
-                  <div className="space-y-4 w-1/2 pl-6 border-[#E5E5E7] border-l-[1px]">
-                    <p className="font-bold text-[16px] leading-5"><span className="mr-[3px]">R$</span>{sessionSimulations[sessionSimulations.length - 1].simulationData.amountDeposited}<span className="ml-[3px]">mil</span></p>
-                    <p className="text-[15px] leading-6">Poupança</p>
-                  </div>
-                </div>
-              </div> */}
 
             </div>
           </div>
@@ -269,13 +288,14 @@ export function SimulationResult() {
         </div>
       </Card>
 
-      {/* <dialog id="new_simulation" className="modal bg-[background: rgba(0, 0, 0, 0.50)]">
-        <div className="modal-box bg-white rounded py-8 px-6" >
+      <input type="checkbox" id="new_simulation" className="modal-toggle" />
+      <div className="modal " role="dialog">
+        <div className="modal-box bg-white">
           <div className="flex items-center gap-2 mb-8">
             <PlusIconCustom />
             <h3 className="font-bold text-[32px] leading-[35px] font-Big_Shoulders_Text  text-black uppercase">Nova Simulação</h3>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-2">
+          <form onSubmit={handleSubmit} className="space-y-2" method="dialog">
             <label className="input flex items-center  rounded gap-2 h-[56px] bg-white bsx-sm-v2 border border-gray-600;">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -330,7 +350,7 @@ export function SimulationResult() {
                   ></path>
                 </g>
               </svg>
-              <input type="text" name="month_investment" className="grow" placeholder="Investimento (mensal)" onChange={handleChange} />
+              <input type="text" name="monthly_investment" className="grow" placeholder="Investimento (mensal)" onChange={handleChange} />
             </label>
             <label className="input flex items-center  rounded gap-2 h-[56px] bg-white bsx-sm-v2 border border-gray-600;">
               <svg
@@ -360,9 +380,9 @@ export function SimulationResult() {
               </svg>
               <input type="text" name="retire_age" className="grow" placeholder="Idade de aposentadoria" onChange={handleChange} />
             </label>
-            ``
+
             <div className="pt-8" >
-              <Button className=" relative w-full h-[56px] bg-highlight rounded bxs-sm" type="submit">
+              <Button className=" relative w-full h-[56px] bg-highlight rounded bxs-sm" type="submit" >
                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
                   <mask id="mask0_9533_90" maskUnits="userSpaceOnUse" x="0" y="0" width="25" height="24">
                     <rect x="0.5" width="24" height="24" fill="#D9D9D9" />
@@ -372,17 +392,20 @@ export function SimulationResult() {
                   </g>
                 </svg>
                 <p className="font-bold text-[16px] leading-5 text-black ml-[6px]">Nova simulação</p>
-                <form method="dialog" className="modal-backdrop absolute w-full h-full">
-                  <button>close</button>
-                </form>
+
               </Button>
             </div>
+
           </form>
+          <div className="modal-action absolute top-0 right-4 cursor-pointer">
+            <label htmlFor="new_simulation" className="" id="close-x">X</label>
+          </div>
         </div>
-        <form method="dialog" className="modal-backdrop">
-          <button>close</button>
-        </form>
-      </dialog> */}
+        <label className="modal-backdrop" htmlFor="new_simulation">Close</label>
+
+      </div>
+
+
 
     </Tabs >
   )
