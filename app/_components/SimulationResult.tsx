@@ -59,6 +59,7 @@ export function SimulationResult() {
     const { name, value } = event.target;
     setFormDataNew({ ...formDataNew, [name]: value });
   }
+  const [tabsData, setTabsData] = useState([]);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -91,11 +92,12 @@ export function SimulationResult() {
     const form = e.target as HTMLFormElement; // Get the form element from the event object
     form.reset();
     document.getElementById('close-x')?.click()
+    setTabsData(storedData)
   };
 
 
   return (
-    <Tabs defaultValue="salary" className="w-full pb-10 ">
+    <Tabs defaultValue="salary" className="w-full pb-10 " id="tabs">
       <div className="w-full bg-highlight flex items-center justify-between h-[64px] pl-2 pr-6">
         <div className="flex items-center gap-4 text-black font-semibold w-[50%] text-[15px]">
           <ChevronLeft width={24} height={24} />
