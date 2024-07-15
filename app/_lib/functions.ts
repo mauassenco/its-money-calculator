@@ -27,27 +27,26 @@ export const checkNumberType = (value:number) => {
 };
 
 export const formatNumberWithSeparators = (number: number) => {
-
-  // Format the number with thousands separators (pt-BR locale)
   const formattedNumber = number.toLocaleString('pt-BR', { maximumFractionDigits: 0 });
-
-  // Split the formatted number at the decimal point
   const [integerPart, fractionalPart] = formattedNumber.split('.');
-
-  // Extract the desired numbers
-  const extractedInteger = integerPart.replace(/,/g, ''); // Remove separators
-  const extractedDecimalDigit = fractionalPart ? fractionalPart[0] : '0'; // Handle cases without decimals
-
-  // Combine and return the extracted numbers
-  // return `${extractedInteger}.${extractedDecimalDigit}`;
+  const extractedInteger = integerPart.replace(/,/g, '');
+  const extractedDecimalDigit = fractionalPart ? fractionalPart[0] : '0'; 
+  
   if (extractedDecimalDigit == '0') {
    return extractedInteger
   }
-  
   return `${extractedInteger}.${extractedDecimalDigit}`
 };
 
+export const formatMoney = (value: number) => {   
+  // return `R$${Intl.NumberFormat().format(value)}`;
+  const formatter = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  });
 
+  const formattedNumber = formatter.format(value);
 
+  return formattedNumber
 
-
+};

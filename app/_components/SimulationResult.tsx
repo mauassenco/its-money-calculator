@@ -1,4 +1,4 @@
-import { ChevronLeft, XIcon } from "lucide-react"
+import { Check, ChevronLeft, XIcon } from "lucide-react"
 import { Button } from "../_components/ui/button"
 import {
   Card,
@@ -22,9 +22,10 @@ import WhatssappIcon from "./icons/WhatssappIcon"
 import PlusIconCustom from "./icons/PlusIconCustom"
 import HandOnFile from "./icons/HandOnFile"
 import { useContext, useState } from "react"
-import { checkNumberType, formatNumberWithSeparators } from "../_lib/functions"
+import { checkNumberType, formatMoney, formatNumberWithSeparators } from "../_lib/functions"
 import { AcfFieldsContext } from "../context/AcfFields"
 import parse from 'html-react-parser'
+import Link from "next/link"
 
 type Simulation = {
   simulationData: {
@@ -102,7 +103,9 @@ export function SimulationResult() {
 
   const AcfData = useContext(AcfFieldsContext)
 
+  const encodeMessage = encodeURIComponent(`Valor Acumulado: ${formatMoney(simulationDataItems.ValorAcumulado)}, Valor Poupança: ${formatMoney(simulationDataItems.ValorPoupanca)}, Valor Previdência: ${formatMoney(simulationDataItems.ValorPrevidencia)}, Salário Previdencia: ${formatMoney(simulationDataItems.SalarioPrevidencia)}, Salário Poupança: ${formatMoney(simulationDataItems.SalarioPoupanca)}`)
 
+  const link = `https://wa.me/+55${simulationDataItems.phone}?text=${encodeMessage}`
 
   return (
     <Tabs defaultValue="salary" className="w-full pb-10 " id="tabs">
@@ -245,12 +248,14 @@ export function SimulationResult() {
       <Card>
         <div className="flex gap-2 py-0 px-4">
           <div className="rounded flex flex-col items-center border border-highlight w-[50%] bg-white p-4 gap-4">
-            <div className="w-12 h-12">
-              <WhatssappIcon />
-            </div>
-            <div className="text-center font-bold leading-5 text-[16px]">
-              <p>Quero receber os resultados pelo WhatsApp</p>
-            </div>
+            <label htmlFor="send_to_whatsapp" className="flex flex-col items-center gap-4 bg-white border-none hover:bg-white" >
+              <div className="w-12 h-12">
+                <WhatssappIcon />
+              </div>
+              <div className="text-center font-bold leading-5 text-[16px]">
+                <p>Quero receber os resultados pelo WhatsApp</p>
+              </div>
+            </label>
           </div>
 
           <div className="rounded flex flex-col items-center border border-highlight w-[50%] bg-white p-4 gap-4 ">
@@ -416,7 +421,28 @@ export function SimulationResult() {
           </div>
         </div>
         <label className="modal-backdrop" htmlFor="new_simulation">Close</label>
+      </div>
 
+      <input type="checkbox" id="send_to_whatsapp" className="modal-toggle" />
+      <div className="modal " role="dialog">
+        <div className="modal-box bg-white flex flex-col  ">
+          <div className="flex items-center gap-2 mb-8">
+            <Check width={40} height={40} />
+            <h3 className="font-bold text-[32px] leading-[35px] font-Big_Shoulders_Text  text-black uppercase">Tudo Certo</h3>
+          </div>
+          <div>
+            <p className="text-[17px] text-black">Resultados enviados com sucesso para o seu contato!</p>
+          </div>
+          <div className="modal-action cursor-pointer">
+            {/* <label htmlFor="send_to_whatsapp" className="" id="close-x"></label> */}
+            <label htmlFor="send_to_whatsapp" className="w-[287px]" id="close-x">
+              <a href={link} target="_blank" rel="noopener noreferrer">
+                <p className="bxs-sm flex items-center justify-center h-[56px] w-full max-w-[326px] bg-highlight text-base font-bold text-black text-center rounded hover:bg-[#0FF]">Entendi</p>
+              </a>
+            </label>
+          </div>
+        </div>
+        <label className="modal-backdrop" htmlFor="send_to_whatsapp">Close</label>
       </div>
 
     </Tabs >
