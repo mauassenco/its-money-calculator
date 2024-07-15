@@ -3,7 +3,7 @@ import { z } from "zod";
 export const registerSchema = z.object({
   name: z.string().min(3, { message: "Digite seu nome" }),
   // email: z.string().email("Digite um email válido"),
-  email: z.coerce.string().email().min(5 , {message: "Digite um email válido"}),
+  email: z.coerce.string().email().min(0 , {message: "Digite um email válido"}),
   phone: z.string().min(11, {message: "Digite um telefone válido"}),
   // age: z.coerce.number().min(2, {message:"Digite um idade válida"}).max(100),
   age: z.string().min(2, {message:"Digite um idade válida"}).max(100),

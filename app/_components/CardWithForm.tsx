@@ -165,6 +165,7 @@ export function CardWithForm() {
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)}>
                       <div className="pt-10 relative overflow-x-hidden h-[66vh]">
+
                         {/* Nome */}
                         <motion.div className={
                           cn("h-[full] flex flex-col gap-12 px-1", {
@@ -194,6 +195,7 @@ export function CardWithForm() {
                                   <FormLabel className="text-[17px]  leading-7">{steps[0].questoes_da_etapa[0].questao.texto_da_questao}</FormLabel>
                                   <FormControl>
                                     <Input
+                                      required
                                       placeholder={steps[0].questoes_da_etapa[0].questao.texto_do_placeholder}
                                       {...field}
                                       className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
@@ -235,9 +237,11 @@ export function CardWithForm() {
                                   <FormLabel className="text-[17px] leading-7">{steps[1].questoes_da_etapa[0].questao.texto_da_questao}</FormLabel>
                                   <FormControl>
                                     <Input
+                                      required
                                       placeholder={steps[1].questoes_da_etapa[0].questao.texto_do_placeholder}
                                       {...field}
                                       className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]  "
+                                      type="email"
                                     />
                                   </FormControl>
                                   <FormMessage />
@@ -252,9 +256,11 @@ export function CardWithForm() {
                                   <FormLabel className="text-[17px]  leading-7">{steps[1].questoes_da_etapa[1].questao.texto_da_questao}</FormLabel>
                                   <FormControl>
                                     <Input
+                                      required
                                       placeholder={steps[1].questoes_da_etapa[1].questao.texto_do_placeholder}
                                       {...field}
                                       className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
+                                      type="number"
                                     />
                                   </FormControl>
                                   <FormMessage />
@@ -292,9 +298,11 @@ export function CardWithForm() {
                                   <FormLabel className="text-[17px]">{steps[2].questoes_da_etapa[0].questao.texto_da_questao}</FormLabel>
                                   <FormControl>
                                     <Input
+                                      required
                                       placeholder={steps[2].questoes_da_etapa[0].questao.texto_do_placeholder}
                                       {...field}
                                       className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
+                                      type="number"
                                     />
                                   </FormControl>
                                   <FormMessage />
@@ -368,9 +376,11 @@ export function CardWithForm() {
                                   <FormLabel className="text-[17px]">{steps[3].questoes_da_etapa[0].questao.texto_da_questao}</FormLabel>
                                   <FormControl>
                                     <Input
+                                      required
                                       placeholder={steps[3].questoes_da_etapa[0].questao.texto_do_placeholder}
                                       {...field}
                                       className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
+                                      type="number"
                                     />
                                   </FormControl>
                                   <FormMessage />
@@ -409,9 +419,11 @@ export function CardWithForm() {
                                   <FormLabel className="text-[17px]">{steps[4].questoes_da_etapa[0].questao.texto_da_questao}</FormLabel>
                                   <FormControl>
                                     <Input
+                                      required
                                       placeholder={steps[4].questoes_da_etapa[0].questao.texto_do_placeholder}
                                       {...field}
                                       className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
+                                      type="number"
                                     />
                                   </FormControl>
                                   <FormMessage />
@@ -426,9 +438,11 @@ export function CardWithForm() {
                                   <FormLabel className="text-[17px]">{steps[4].questoes_da_etapa[1].questao.texto_da_questao}</FormLabel>
                                   <FormControl>
                                     <Input
+                                      required
                                       placeholder={steps[4].questoes_da_etapa[1].questao.texto_do_placeholder}
                                       {...field}
                                       className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
+                                      type="number"
                                     />
                                   </FormControl>
                                   <FormMessage />
