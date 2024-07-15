@@ -151,10 +151,16 @@
   box-shadow: -2px 2px 0px 0px #0cc;
 }
 
+.ab-item button ~ label {
+  border: 1px solid #E5E5E7;
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+}
 .ab-item button[data-state="checked"] ~ label {
   border: 1px solid #0cc;
   color: #000;
-  padding: 0.75rem;
+  /* padding: 0.75rem;
+  border-radius: 0.25rem; */
 }
 
 
@@ -222,16 +228,3 @@
   content: url("/assets/images/indeterminate_check_box.svg") !important;
   background-size: cover;
 }
-/* 
-.progress-primary::-moz-progress-bar {
-  border-radius: var(--rounded-box, 1rem 16px);
-  --tw-bg-opacity: 1;
-  background-color: 'green'!important;
-}
-.progress-primary:indeterminate {
-  --progress-color: 'red' !important;
-}
-.progress-primary::-webkit-progress-value {
-  --tw-bg-opacity: 1;
-  background-color: 'yellow'!important;
-} */

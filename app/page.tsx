@@ -1,8 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Hero from "./_components/Hero";
 import AccordionGroup from "./_components/AccordionGroup";
+import { AcfFieldsContext } from "./context/AcfFields";
+import { AcfFields } from "./_types";
+
+
 
 export default function Home() {
   type AcfAccordionData = {
@@ -21,8 +25,8 @@ export default function Home() {
     accordion: AcfAccordionData[];
   };
 
-  const reqUrl =
-    "https://itsmoney.mobstaging.com.br/wp-json/wp/v2/calculadoras/26056?&_fields=acf";
+  const reqUrl = "https://imoney.mobstaging.com.br/wp-json/wp/v2/calculadoras/26056?&_fields=acf";
+
   const fetchData = async () => {
     try {
       const response = await fetch(reqUrl);
@@ -40,23 +44,15 @@ export default function Home() {
     fetchData();
   }, []);
 
-  const [acfData, setAcfData] = useState<AcfData>();
+  // const [acfData, setAcfData] = useState<AcfData>();
+  const [acfData, setAcfData] = useState<AcfFields>();
 
   return (
     <>
-      <Hero
-        upperTitle={acfData?.superior_title_text}
-        title={acfData?.title}
-        underTitle={acfData?.inferior_title_text}
-        description={acfData?.description_text}
-        ctaLabel={acfData?.cta_label}
-      />
-      <AccordionGroup
-        accordionTitle={acfData?.accordion_title}
-        accordionSubtitle={acfData?.accordion_subtitle}
-        items={acfData?.accordion}
-      />
-
+      <AcfFieldsContext.Provider value={acfData} >
+        <Hero />
+        <AccordionGroup />
+      </AcfFieldsContext.Provider>
     </>
   );
 }

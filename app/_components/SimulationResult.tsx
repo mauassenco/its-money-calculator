@@ -21,10 +21,10 @@ import CallAttendantIcon from "./icons/CallAttendantIcon"
 import WhatssappIcon from "./icons/WhatssappIcon"
 import PlusIconCustom from "./icons/PlusIconCustom"
 import HandOnFile from "./icons/HandOnFile"
-import { useEffect, useState } from "react"
-import { randomUUID } from "crypto"
+import { useContext, useState } from "react"
 import { checkNumberType, formatNumberWithSeparators } from "../_lib/functions"
-
+import { AcfFieldsContext } from "../context/AcfFields"
+import parse from 'html-react-parser'
 
 type Simulation = {
   simulationData: {
@@ -37,15 +37,14 @@ type Simulation = {
     monthly_investment?: number;
     investidor_profile?: string;
     gender?: string;
-    amountDeposited?: number;
-    investimentTimeInMonths?: number;
-    totalEarned?: number;
-    totalInflationAdjusted?: number;
-    totalPrivate?: number
+    ValorAcumulado: number;
+    ValorPrevidencia: number;
+    ValorPoupanca: number;
+    SalarioPrevidencia: number;
+    SalarioPoupanca: number;
 
   };
 };
-
 
 export function SimulationResult() {
   const sessionSimulationsRaw = sessionStorage.getItem('Simulações');
@@ -59,41 +58,50 @@ export function SimulationResult() {
     const { name, value } = event.target;
     setFormDataNew({ ...formDataNew, [name]: value });
   }
+
   const [tabsData, setTabsData] = useState([]);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const simulationDataItemsNew = sessionSimulations[sessionSimulations.length - 1].simulationData
-    const userPrevAge = Number(sessionStorage.getItem('Idade'));
+    const userAge = Number(sessionStorage.getItem('Idade'));
 
-    const retireAge = Number(simulationDataItemsNew.retire_age)
-    const monthlyInvestiment = Number(simulationDataItemsNew.monthly_investment)
-    const initialInvestiment = Number(simulationDataItemsNew.initial_investment)
+    const userRetireAge = Number(simulationDataItemsNew.retire_age)
+    const userPv = Number(simulationDataItemsNew.monthly_investment)
+    const userPmt = Number(simulationDataItemsNew.initial_investment)
 
-    const monthlyInterestRate = 0.0033;
-    const monthlyInflationRate = 0.04 / 12;
-    const monthlyInterestPrivate = 1;
+    const rateA = 0.00678
+    const rateB = 0.0033
+    const period = (userRetireAge - userAge) * 12
+    const ageLimit = 100
 
-    const timePeriod = retireAge - userPrevAge;
-    const timePeriodMonths = timePeriod * 12
+    const ValorPrevidencia =
+      (userPv * Math.pow((1 + rateA), period)) +
+      (userPmt * (Math.pow((1 + rateA), period) - 1) / rateA)
+    const ValorPoupanca =
+      (userPv * Math.pow((1 + rateB), period)) +
+      (userPmt * (Math.pow((1 + rateB), period) - 1) / rateB)
 
-    const amountDeposited = Number((monthlyInvestiment * timePeriod * 12) + initialInvestiment)
+    const SalarioPrevidencia = (ValorPrevidencia * rateA) / (1 - Math.pow((1 + rateA), -(ageLimit - userRetireAge)))
+    const SalarioPoupanca = (ValorPoupanca * rateB) / (1 - Math.pow((1 + rateB), -(ageLimit - userRetireAge)))
 
-    const totalInflationAdjusted = (initialInvestiment * Math.pow(1 + monthlyInterestRate, timePeriodMonths)) + (monthlyInvestiment * (((Math.pow(1 + monthlyInterestRate, timePeriodMonths)) / monthlyInterestRate)))
-    // 500 * (1 + 0.00275) ^ (468)
+    const ValorAcumulado = userPv + (userPmt * period)
 
-    const totalPrivate = (initialInvestiment * Math.pow(1 + monthlyInterestPrivate, timePeriodMonths)) + (monthlyInvestiment * (((Math.pow(1 + monthlyInterestPrivate, timePeriodMonths)) / monthlyInterestPrivate)))
-
-    const simulationData = { ...formDataNew, amountDeposited, totalInflationAdjusted, totalPrivate }
+    const simulationData = { ...formDataNew, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado }
     let storedData = JSON.parse(window.sessionStorage.getItem('Simulações') || '[]');
 
-    storedData.push({ randomUUID, simulationData });
+    storedData.push({ simulationData });
     window.sessionStorage.setItem('Simulações', JSON.stringify(storedData));
+
     const form = e.target as HTMLFormElement; // Get the form element from the event object
     form.reset();
     document.getElementById('close-x')?.click()
+
     setTabsData(storedData)
   };
+
+  const AcfData = useContext(AcfFieldsContext)
+
 
 
   return (
@@ -103,7 +111,6 @@ export function SimulationResult() {
           <ChevronLeft width={24} height={24} />
           <h3>Resultado</h3>
         </div>
-
         <TabsList className="grid grid-cols-[auto_auto] bg-[#0FF] p-1 ">
           <TabsTrigger value="salary">Salário</TabsTrigger>
           <TabsTrigger value="rentability">Rentabilidade</TabsTrigger>
@@ -117,12 +124,13 @@ export function SimulationResult() {
               <MoneyBagIcon />
               <div className="flex gap-2">
                 <h3 className="text-[32px] leading-9 flex gap-1.5 font-Big_Shoulders_Text font-bold"><span>R$</span>
-                  {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.amountDeposited))}
-                  <span className="uppercase">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></h3>
+                  {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.SalarioPrevidencia))}
+                  <span className="uppercase">{checkNumberType(Number(simulationDataItems.SalarioPrevidencia))}</span></h3>
               </div>
             </CardTitle>
             <CardDescription className="text-[17px] text-center leading-7 p-0 m-0">
-              Será o valor disponível para sua aposentadoria num plano de <strong>Previdência Privada</strong> disponibilizado pela Blue3 Investimentos.
+              {/* {parse(String(AcfData.tabs[0]?.dados_da_aba?.texto_principal))} */}
+              {parse(String(AcfData?.tabs[0]?.dados_da_aba?.texto_principal))}
             </CardDescription>
             <Separator className="h-[1px] bg-[#E5E5E7]" />
           </CardHeader>
@@ -134,7 +142,7 @@ export function SimulationResult() {
                   <h3 className="text-[18px] text-highlight font-bold">INSS</h3>
                 </div>
                 <div>
-                  <p className="text-center text-[15px]">Como aposentado pelo INSS* você receberia</p>
+                  <p className="text-center text-[15px]">{parse(String(AcfData?.tabs[0]?.dados_da_aba?.subcards.texto_card_a))}</p>
                   <p className="font-bold text-[16px] mt-4 text-center">1 salário mínimo</p>
                 </div>
               </div>
@@ -148,8 +156,8 @@ export function SimulationResult() {
                   <PigSafeIcon />
                 </div>
                 <div>
-                  <p className="text-center text-[15px]">Na poupança você teria acumulado aproximadamente</p>
-                  <p className="font-bold text-[16px] mt-4 text-center"><span className="mr-[3px]">R$</span>{formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.totalInflationAdjusted))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></p>
+                  <p className="text-center text-[15px]">{parse(String(AcfData?.tabs[0]?.dados_da_aba?.subcards.texto_card_b))}</p>
+                  <p className="font-bold text-[16px] mt-4 text-center"><span className="mr-[3px]">R$</span>{formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.ValorPoupanca))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.ValorPoupanca))}</span></p>
                 </div>
               </div>
 
@@ -158,7 +166,7 @@ export function SimulationResult() {
 
           </CardContent>
           <CardFooter className="p-0">
-            <p className="leading-[18px] text-[12px] mt-8 text-center">*O INSS não tem rentabilidade, pois não existe a possibilidade de sacar o dinheiro que foi acumulado, ele é gerido pelo governo com rentabilidade próxima à caderneta de poupança.</p>
+            <p className="leading-[18px] text-[12px] mt-8 text-center">{parse(String(AcfData?.tabs[0]?.dados_da_aba?.observacao))}</p>
           </CardFooter>
         </Card>
       </TabsContent>
@@ -169,24 +177,27 @@ export function SimulationResult() {
             <CardTitle className="flex justify-center items-center gap-6 ">
               <MoneyBagIcon />
               <div className="flex gap-2">
-                <h3 className="text-[32px] leading-9 flex gap-1.5 font-Big_Shoulders_Text font-bold"><span>R$</span> {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.totalPrivate))}<span className="uppercase">{checkNumberType(Number(simulationDataItems.amountDeposited))}
+                <h3 className="text-[32px] leading-9 flex gap-1.5 font-Big_Shoulders_Text font-bold"><span>R$</span> {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.ValorPrevidencia))}<span className="uppercase">{checkNumberType(Number(simulationDataItems.ValorPrevidencia))}
                 </span></h3>
               </div>
             </CardTitle>
-            <CardDescription className="text-[17px] text-center leading-7 p-0 m-0">Valor total na <strong>Previdência Privada</strong>
+            <CardDescription className="text-[17px] text-center leading-7 p-0 m-0">
+              {parse(String(AcfData?.tabs[1]?.dados_da_aba?.texto_principal))}
             </CardDescription>
-            <Separator className="h-[1px] bg-[#E5E5E7]" />
+
           </CardHeader>
 
-          <CardContent className="px-1">
+          <CardContent className="px-1 py-8">
             <div className="grid grid-cols-[1fr_24px_1fr] pt-8 m-0">
               <div className="flex items-center flex-col gap-4">
                 <div className="bg-[#003] rounded-full w-[72px] h-[72px] flex items-center justify-center flex-col">
                   <PigSafeIcon />
                 </div>
                 <div>
-                  <p className="mb-4 font-bold text-[16px] text-center"><span className="mr-[3px]">R$</span> {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.totalInflationAdjusted))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></p>
-                  <p className="text-center text-[15px]">Poupança</p>
+                  <p className="mb-4 font-bold text-[16px] text-center"><span className="mr-[3px]">R$</span>{formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.ValorAcumulado))}
+                    <span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.ValorAcumulado))}</span></p>
+                  <p className="text-center text-[15px]">
+                    {parse(String(AcfData?.tabs[1].dados_da_aba?.subcards.texto_card_a))}</p>
                 </div>
               </div>
 
@@ -199,15 +210,18 @@ export function SimulationResult() {
                   <HandOnFile />
                 </div>
                 <div>
-                  <p className="mb-4 font-bold text-[16px] text-center"><span className="mr-[3px]">R$</span> {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.totalPrivate))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></p>
-                  <p className="text-center text-[15px] text-nowrap">Previdência Privada</p>
+                  <p className="mb-4 font-bold text-[16px] text-center"><span className="mr-[3px]">R$</span> {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.ValorPoupanca))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.ValorPoupanca))}</span></p>
+                  <p className="text-center text-[15px] text-nowrap">{parse(String(AcfData?.tabs[1]?.dados_da_aba?.subcards.texto_card_b))}</p>
                 </div>
               </div>
 
             </div>
 
           </CardContent>
+          <Separator className="h-[1px] bg-[#E5E5E7] " />
+
           <CardFooter className="p-0">
+            <p className="leading-[18px] text-[12px] mt-8 text-center">{parse(String(AcfData?.tabs[1]?.dados_da_aba?.observacao))}</p>
           </CardFooter>
         </Card>
       </TabsContent>
@@ -251,8 +265,6 @@ export function SimulationResult() {
             </label>
 
 
-
-
           </div>
         </div>
       </Card>
@@ -267,16 +279,16 @@ export function SimulationResult() {
 
               {sessionSimulations.slice().reverse().map((simulation, index) => (
                 <div className="p-4 border-highlight border rounded space-y-6" key={index}>
-                  <h3 className="font-bold text-[18px] flex items-center"><span className="bg-highlight rounded-full w-[7px] h-[7px] mr-[6px]"></span> {formatNumberWithSeparators(Number(simulation.simulationData.amountDeposited))}<span className="mx-[2px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span>(previdência)</h3>
+                  <h3 className="font-bold text-[18px] flex items-center"><span className="bg-highlight rounded-full w-[7px] h-[7px] mr-[6px]"></span> {formatNumberWithSeparators(Number(simulation.simulationData.ValorPrevidencia))}<span className="mx-[2px]">{checkNumberType(Number(simulationDataItems.ValorPrevidencia))}</span>(previdência)</h3>
                   <p className="text-[15px]">Aposentar aos: <span className="font-bold">{simulation.simulationData.retire_age}{' '}anos</span></p>
                   <div className="flex">
                     <div className="space-y-4 w-1/2">
-                      <p className="font-bold text-[16px] leading-5"><span className="mr-[3px]">R$</span>{formatNumberWithSeparators(Number(simulation.simulationData.amountDeposited))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></p>
+                      <p className="font-bold text-[16px] leading-5"><span className="mr-[3px]">R$</span>{formatNumberWithSeparators(Number(simulation.simulationData.ValorAcumulado))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.ValorAcumulado))}</span></p>
                       <p className="text-[#EE3939] text-[15px] leading-6">INSS</p>
                     </div>
 
                     <div className="space-y-4 w-1/2 pl-6 border-[#E5E5E7] border-l-[1px]">
-                      <p className="font-bold text-[16px] leading-5"><span className="mr-[3px]">R$</span> {formatNumberWithSeparators(Number(simulation.simulationData.totalInflationAdjusted))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.amountDeposited))}</span></p>
+                      <p className="font-bold text-[16px] leading-5"><span className="mr-[3px]">R$</span> {formatNumberWithSeparators(Number(simulation.simulationData.ValorPoupanca))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.ValorPoupanca))}</span></p>
                       <p className="text-[15px] leading-6">Poupança</p>
                     </div>
                   </div>
@@ -406,8 +418,6 @@ export function SimulationResult() {
         <label className="modal-backdrop" htmlFor="new_simulation">Close</label>
 
       </div>
-
-
 
     </Tabs >
   )

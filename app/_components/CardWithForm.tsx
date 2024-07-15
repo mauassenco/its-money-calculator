@@ -12,101 +12,64 @@ import {
 } from "./ui/card";
 import { Input } from "./ui/input";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { ArrowRight, Check, CheckCircle2Icon, CloudCog, DollarSignIcon, LogOut } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Label } from "@radix-ui/react-label";
+import { ArrowRight, Check, CheckCircle2Icon, DollarSignIcon, LogOut } from "lucide-react";
+import { useContext, useState } from "react";
 import parse from 'html-react-parser';
 import { cn } from "../_lib/utils";
 import SimulationResult from "./SimulationResult";
-import { randomUUID } from "crypto";
 import { SheetClose } from "./ui/sheet";
 import { Separator } from "@radix-ui/react-separator";
 import { Progress } from "./ui/progress";
+import { AcfFieldsContext } from "../context/AcfFields";
+import { registerSchema } from "../validator/auth";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "./ui/form";
+import { motion } from "framer-motion";
 
+
+type Input = z.infer<typeof registerSchema>
 
 export function CardWithForm() {
-  type Steps = {
-    titulo_da_etapa: string;
-    texto_da_etapa: string;
-    questoes_da_etapa: Questions[];
-  };
-
-  type Questions = {
-    questao: Question;
-  };
-
-  type Question = {
-    texto_da_questao: string;
-    tipo_da_questao: QuestionType;
-    texto_do_placeholder?: string;
-    opcoes_de_resposta?: RadioOptions[];
-    opcoes_de_a_b?: AB_Options[];
-    alias_do_campo?: string;
-  };
-
-  type QuestionType = "Texto" | "Número" | "A/B" | "Múltipla Escolha";
-
-  type RadioOptions = {
-    opcao_de_resposta_multipla?: string;
-  };
-
-  type AB_Options = {
-    opcao_de_resposta_a_b?: string;
-  };
-
-  type StepsData = {
-    etapas: Steps[];
-  };
-
-
-  type FormDataFields = {
-    name: string;
-    phone: string
-    age: number,
-    retire_age: number,
-    initial_investment: number,
-    monthly_investment: number,
-    gender: string,
-    investidor_profile: string,
-  }
-
-  const [acfEtapas, setAcfEtapas] = useState<StepsData>();
-
-  const reqUrl =
-    "https://itsmoney.mobstaging.com.br/wp-json/wp/v2/calculadoras/26056?&_fields=acf.etapas";
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch(reqUrl);
-      if (!response.ok) {
-        throw new Error(`Erro ao obter dados: ${response.statusText}`);
-      }
-      const data = await response.json();
-
-      setAcfEtapas(data.acf);
-    } catch (error) {
-      console.error("Erro ao obter dados:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const steps = acfEtapas?.etapas ?? [];
-
   const [formStep, setFormStep] = useState(0);
-  // const [formData, setFormData] = useState({});
+
   const [formData, setFormData] = useState<Record<string, unknown>>({});
   const [clientName, setClientName] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
-  const [myData, setmyData] = useState({});
+
+  const form = useForm<Input>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      age: "",
+      retire_age: "",
+      month_investment: "",
+      initial_investment: "",
+      gender: "",
+      investidor_profile: "",
+    },
+  })
+
+  const AcfData = useContext(AcfFieldsContext);
+  const steps = AcfData?.etapas ?? [];
 
   const handleChange = (event: any) => {
     const { name, value } = event.target;
-    if (name === 'opcaoSelecionada') {
-      setFormData({ ...formData, [name]: value });
+    // setFormData({ ...formData, [name]: value });
+
+    if (name === '') {
+      setFormData({ ...formData, ["investidor_profile"]: value });
     } else {
       setFormData({ ...formData, [name]: value });
       if (name === 'name') {
@@ -114,52 +77,43 @@ export function CardWithForm() {
       }
     }
 
-    if (event.target.value.length) {
-      return setIsEmpty(false)
-    } else {
-      return setIsEmpty(true)
-    }
   };
 
-  const handleSubmit = (e: any) => {
+  const onSubmit = (data: Input, e: any) => {
     e.preventDefault();
     setIsSubmitted(true);
+    setFormStep((Number(AcfData?.etapas?.length)))
 
-    const retireAge = Number(formData.retire_age)
     const userAge = Number(formData.age)
-    const monthlyInvestiment = Number(formData.monthly_investment)
-    const initialInvestiment = Number(formData.initial_investment)
+    const userRetireAge = Number(formData.retire_age)
+    const userPv = Number(formData.initial_investment)
+    const userPmt = Number(formData.month_investment)
 
-    const monthlyInterestRate = 0.0033;
-    const monthlyInflationRate = 0.04 / 12;
-    const monthlyInterestPrivate = 1;
+    const rateA = 0.00678
+    const rateB = 0.0033
+    const period = (userRetireAge - userAge) * 12
+    const ageLimit = 100
 
-    // const period = retireAge - userAge
+    const ValorPrevidencia =
+      (userPv * Math.pow((1 + rateA), period)) +
+      (userPmt * (Math.pow((1 + rateA), period) - 1) / rateA)
 
-    const timePeriod = retireAge - userAge;
-    const timePeriodMonths = timePeriod * 12
+    const ValorPoupanca =
+      (userPv * Math.pow((1 + rateB), period)) +
+      (userPmt * (Math.pow((1 + rateB), period) - 1) / rateB)
 
-    const amountDeposited = Number((monthlyInvestiment * timePeriod * 12) + initialInvestiment)
+    const SalarioPrevidencia = (ValorPrevidencia * rateA) / (1 - Math.pow((1 + rateA), -(ageLimit - userRetireAge)))
+    const SalarioPoupanca = (ValorPoupanca * rateB) / (1 - Math.pow((1 + rateB), -(ageLimit - userRetireAge)))
 
-    const totalInflationAdjusted = (initialInvestiment * Math.pow(1 + monthlyInterestRate, timePeriodMonths)) + (monthlyInvestiment * (((Math.pow(1 + monthlyInterestRate, timePeriodMonths)) / monthlyInterestRate)))
-    // 500 * (1 + 0.00275) ^ (468)
+    const ValorAcumulado = userPv + (userPmt * period)
 
-    const totalPrivate = (initialInvestiment * Math.pow(1 + monthlyInterestPrivate, timePeriodMonths)) + (monthlyInvestiment * (((Math.pow(1 + monthlyInterestPrivate, timePeriodMonths)) / monthlyInterestPrivate)))
-
-    // const totalEarned = formatNumberWithSeparators(Number(totalInflationAdjusted))
-
-    const simulationData = { ...formData, totalInflationAdjusted, amountDeposited, totalPrivate }
+    const simulationData = { ...formData, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado }
 
     let storedData = JSON.parse(window.sessionStorage.getItem('Simulações') || '[]');
-
-    storedData.push({ randomUUID, simulationData });
+    storedData.push({ simulationData });
     window.sessionStorage.setItem('Simulações', JSON.stringify(storedData));
     window.sessionStorage.setItem('Idade', JSON.stringify(userAge));
-
-    // alert(JSON.stringify(simulationData, null, 4))
-  };
-
-
+  }
 
   return (
     <>
@@ -189,168 +143,417 @@ export function CardWithForm() {
                 width={32}
                 height={32}
               />
-              {/* <progress className="progress progress-accent w-full" value={formStep + 1} max={steps.length + 1}></progress> */}
-              <Progress value={(formStep + 1) * 15} max={(steps.length + 1)} />
-
+              <Progress value={(formStep + 1) * 15} max={(Number(AcfData?.etapas?.length))} />
               <DollarSignIcon
                 className={cn("ml-4 rounded-[100%] border-[2px] text-[#E5E5E7]", {
-                  'text-highlight': formStep === steps.length
+                  'text-highlight': formStep >= 5,
+                  'border-highlight': formStep >= 5,
                 })}
                 size="icon"
                 width={32}
               />
 
             </div>
+
             <Card className=" shadow-cst3 mb-10 flex w-full flex-col overflow-hidden" >
-              {
-                steps.map((step, index: number) => (
-                  <CardContent key={index} className={
-                    cn({
-                      'hidden': formStep !== index,
-                    })}>
-                    <CardHeader>
-                      <CardTitle className="font-bold dddd">{step.titulo_da_etapa}
-                        {index === 1 && `${' '} ${clientName}`}
-                      </CardTitle>
-                      <CardDescription>
-                        {parse(step.texto_da_etapa)}
-                      </CardDescription>
-                    </CardHeader>
-                    <form onSubmit={handleSubmit}>
-                      <div className="grid w-full items-center gap-4 "
-                      >
-                        {step.questoes_da_etapa.map((question) => {
-                          switch (question.questao.tipo_da_questao) {
-                            case "Texto":
-                              return (
-                                <div
-                                  className="flex flex-wrap items-center gap-[8px]"
-                                  key={question.questao.texto_da_questao}
-                                >
-                                  <Label htmlFor={question.questao.texto_da_questao}>
-                                    {question.questao.texto_da_questao}
-                                  </Label>
-                                  <Input
-                                    className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
-                                    id={question.questao.texto_da_questao}
-                                    placeholder={question.questao.texto_do_placeholder}
-                                    onChange={handleChange}
-                                    name={question.questao.alias_do_campo}
-                                  />
+              <CardHeader className="p-0 m-0 h-0">
+                <CardTitle></CardTitle>
+                <CardDescription></CardDescription>
+              </CardHeader>
+              <div>
+                <CardContent className="">
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)}>
+                      <div className="pt-10 relative overflow-x-hidden h-[66vh]">
+                        {/* Nome */}
+                        <motion.div className={
+                          cn("h-[full] flex flex-col gap-12 px-1", {
+                            // 'hidden': formStep != 0,
+                          })}
+                          animate={{
+                            translateX: `-${formStep * 100}%`,
+                          }}
+                          transition={{
+                            ease: "easeInOut"
+                          }}
+                        >
+                          <div className="space-y-6">
+                            <h2 className="text-2xl font-bold">
+                              {parse(steps[0].titulo_da_etapa)}
+                            </h2>
+                            <h2 className="text-[17px]">
+                              {parse(steps[0].texto_da_etapa)}
+                            </h2>
+                          </div>
+                          <div className="">
+                            <FormField
+                              control={form.control}
+                              name="name"
+                              render={({ field }) => (
+                                <FormItem onChange={handleChange}>
+                                  <FormLabel className="text-[17px]  leading-7">{steps[0].questoes_da_etapa[0].questao.texto_da_questao}</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder={steps[0].questoes_da_etapa[0].questao.texto_do_placeholder}
+                                      {...field}
+                                      className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                        </motion.div>
 
-                                </div>
-                              );
-                            case "Número":
-                              return (
-                                <div
-                                  className="flex flex-wrap items-center gap-[8px]"
-                                  key={question.questao.texto_da_questao}
-                                >
-                                  <Label htmlFor={question.questao.texto_da_questao}>
-                                    {question.questao.texto_da_questao}
-                                  </Label>
-                                  <Input
-                                    className="border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
-                                    id={question.questao.texto_da_questao}
-                                    placeholder={question.questao.texto_do_placeholder}
-                                    onChange={handleChange}
-                                    name={question.questao.alias_do_campo}
+                        {/* Email e Telefone */}
+                        <motion.div className={
+                          cn("absolute top-10 left-0 right-0 px-1", {
+                            // 'hidden': formStep != 1,
+                          })}
+                          animate={{
+                            translateX: `${100 - formStep * 100}%`,
+                          }}
+                          transition={{
+                            ease: "easeInOut"
+                          }}>
+                          <div className="space-y-6 mb-12">
+                            <h2 className="text-2xl font-bold">
+                              {parse(steps[1].titulo_da_etapa)}
+                              {' '} {clientName}
+                            </h2>
+                            <h2 className="text-[17px]  leading-7">
+                              {parse(steps[1].texto_da_etapa)}
+                            </h2>
+                          </div>
+                          <div className="space-y-4">
+                            <FormField
+                              control={form.control}
+                              name="email"
+                              render={({ field }) => (
+                                <FormItem onChange={handleChange}>
+                                  <FormLabel className="text-[17px] leading-7">{steps[1].questoes_da_etapa[0].questao.texto_da_questao}</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder={steps[1].questoes_da_etapa[0].questao.texto_do_placeholder}
+                                      {...field}
+                                      className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]  "
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name="phone"
+                              render={({ field }) => (
+                                <FormItem onChange={handleChange}>
+                                  <FormLabel className="text-[17px]  leading-7">{steps[1].questoes_da_etapa[1].questao.texto_da_questao}</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder={steps[1].questoes_da_etapa[1].questao.texto_do_placeholder}
+                                      {...field}
+                                      className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                        </motion.div>
 
-                                  />
-                                </div>
-                              );
-                            case "Múltipla Escolha":
-                              return (
-                                <div
-                                  className="flex flex-col"
-                                  key={question.questao.texto_da_questao}
-                                >
-                                  <RadioGroup className="space-y-2" name={question.questao.alias_do_campo} onChange={handleChange}>
-                                    {question.questao.opcoes_de_resposta?.map(
-                                      (radio_item, index) => (
-                                        <div className="radio-item flex items-center gap-4 space-x-2 rounded-sm border bg-white px-4 py-5" key={question.questao.texto_da_questao}>
-                                          <RadioGroupItem
-                                            value={
-                                              radio_item.opcao_de_resposta_multipla as string
-                                            }
-                                            id={`r-ms-${index}`}
-                                          />
-                                          <Label
-                                            htmlFor={`r-ms-${index}`}
-                                            className="max-w-[84%] text-[15px] leading-6"
-                                          >
-                                            {radio_item.opcao_de_resposta_multipla}
-                                          </Label>
-                                        </div>
-                                      )
-                                    )}
-                                  </RadioGroup>
-                                </div>
-                              );
-                            case "A/B":
-                              return (
-                                <div
-                                  className="flex items-center gap-2"
-                                  key={question.questao.texto_da_questao}
-                                >
-                                  <Label htmlFor={`r-ab-${index}`}>
-                                    {question.questao.texto_da_questao}
-                                  </Label>
-                                  <RadioGroup className="flex gap-0" name={question.questao.alias_do_campo} onChange={handleChange}>
-                                    {question.questao.opcoes_de_a_b?.map(
-                                      (ab_item, index) => (
-                                        <div
-                                          className="ab-item flex items-center gap-0 rounded-sm px-2 py-5"
-                                          key={index}
-                                        >
-                                          <RadioGroupItem
-                                            value={
-                                              ab_item.opcao_de_resposta_a_b as string
-                                            }
-                                            id={`r-ab-${index}`}
-                                            className="hidden"
-                                          />
-                                          <Label
-                                            htmlFor={`r-ab-${index}`}
-                                            className="max-w-[100%] rounded p-0 text-[15px] font-bold leading-6 text-[#c2c2c2]"
-                                          >
-                                            {ab_item.opcao_de_resposta_a_b}
-                                          </Label>
-                                        </div>
-                                      )
-                                    )}
-                                  </RadioGroup>
-                                </div>
-                              );
+                        {/* Idade e Gênero */}
+                        <motion.div className={
+                          cn("absolute top-10 left-0 right-0 px-1", {
+                            // 'hidden': formStep != 2,
+                          })}
+                          animate={{
+                            translateX: `${200 - formStep * 100}%`,
+                          }}
+                          transition={{
+                            ease: "easeInOut"
+                          }}>
+                          <div className="space-y-6 mb-12">
+                            <h2 className="text-2xl font-bold">
+                              {parse(steps[2].titulo_da_etapa)}
+                            </h2>
+                            <h2 className="text-[17px]  leading-7">
+                              {parse(steps[2].texto_da_etapa)}
+                            </h2>
+                          </div>
+                          <div className="space-y-4">
+                            <FormField
+                              control={form.control}
+                              name="age"
+                              render={({ field }) => (
+                                <FormItem onChange={handleChange}>
+                                  <FormLabel className="text-[17px]">{steps[2].questoes_da_etapa[0].questao.texto_da_questao}</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder={steps[2].questoes_da_etapa[0].questao.texto_do_placeholder}
+                                      {...field}
+                                      className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name="gender"
+                              render={({ field }) => (
+                                <FormItem className="space-y-3">
+                                  <FormLabel>{steps[2].questoes_da_etapa[1].questao.texto_da_questao}</FormLabel>
+                                  <FormControl>
+                                    <RadioGroup
+                                      onValueChange={field.onChange}
+                                      defaultValue={field.value}
+                                      onChange={handleChange}
+                                      className="flex"
+                                    >
+                                      <FormItem className="flex items-center space-x-3 space-y-0 ab-item">
+                                        <FormControl>
+                                          <RadioGroupItem value="Fem" className="hidden" />
+                                        </FormControl>
+                                        <FormLabel className="font-bold text-[18px] text-[#c2c2c8]">
+                                          Fem
+                                        </FormLabel>
+                                      </FormItem>
+                                      <FormItem className="flex items-center space-x-3 space-y-0 ab-item">
+                                        <FormControl>
+                                          <RadioGroupItem value="Masc" className="hidden" />
+                                        </FormControl>
+                                        <FormLabel className="font-bold text-[18px] text-[#c2c2c8]">
+                                          Masc
+                                        </FormLabel>
+                                      </FormItem>
+                                    </RadioGroup>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                        </motion.div>
+
+                        {/* Idade de Aposentadoria */}
+                        <motion.div className={
+                          cn("absolute top-10 left-0 right-0 px-1", {
+                            'hidden': formStep != 3,
+                          })}
+                          animate={{
+                            translateX: `${300 - formStep * 100}%`,
+                          }}
+                          transition={{
+                            ease: "easeInOut"
+                          }}>
+                          <div className="space-y-6 mb-12">
+                            <h2 className="text-2xl font-bold">
+                              {parse(steps[3].titulo_da_etapa)}
+                            </h2>
+                            <h2 className="text-[17px]  leading-7">
+                              {parse(steps[3].texto_da_etapa)}
+                            </h2>
+                          </div>
+                          <div className="space-y-4">
+                            <FormField
+                              control={form.control}
+                              name="retire_age"
+                              render={({ field }) => (
+                                <FormItem onChange={handleChange}>
+                                  <FormLabel className="text-[17px]">{steps[3].questoes_da_etapa[0].questao.texto_da_questao}</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder={steps[3].questoes_da_etapa[0].questao.texto_do_placeholder}
+                                      {...field}
+                                      className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                        </motion.div>
+
+                        {/* Investimento Inicial e Investimento Mensal */}
+                        <motion.div className={
+                          cn("absolute top-10 left-0 right-0 px-1", {
+                            'hidden': formStep != 4,
+                          })}
+                          animate={{
+                            translateX: `${400 - formStep * 100}%`,
+                          }}
+                          transition={{
+                            ease: "easeInOut"
+                          }}>
+                          <div className="space-y-6 mb-12">
+                            <h2 className="text-2xl font-bold">
+                              {parse(steps[4].titulo_da_etapa)}
+                              {/* {clientName} */}
+                            </h2>
+                            <h2 className="text-[17px]  leading-7">
+                              {parse(steps[4].texto_da_etapa)}
+                            </h2>
+                          </div>
+                          <div className="space-y-4">
+                            <FormField
+                              control={form.control}
+                              name="initial_investment"
+                              render={({ field }) => (
+                                <FormItem onChange={handleChange}>
+                                  <FormLabel className="text-[17px]">{steps[4].questoes_da_etapa[0].questao.texto_da_questao}</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder={steps[4].questoes_da_etapa[0].questao.texto_do_placeholder}
+                                      {...field}
+                                      className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name="month_investment"
+                              render={({ field }) => (
+                                <FormItem onChange={handleChange}>
+                                  <FormLabel className="text-[17px]">{steps[4].questoes_da_etapa[1].questao.texto_da_questao}</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder={steps[4].questoes_da_etapa[1].questao.texto_do_placeholder}
+                                      {...field}
+                                      className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                        </motion.div>
+
+                        {/* Perfil do Investidor*/}
+                        <motion.div className={
+                          cn("absolute top-10 left-0 right-0 px-1", {
+                            'hidden': formStep != 5,
+                          })}
+                          animate={{
+                            translateX: `${500 - formStep * 100}%`,
+                          }}
+                          transition={{
+                            ease: "easeInOut"
+                          }}>
+                          <div className="space-y-6 mb-12">
+                            <h2 className="text-2xl font-bold">
+                              {parse(steps[5].titulo_da_etapa)}
+                            </h2>
+                            <h2 className="text-[17px] leading-7">
+                              {parse(steps[5].texto_da_etapa)}
+                            </h2>
+                          </div>
+                          <div className="space-y-4">
+                            <FormField
+                              control={form.control}
+                              name="investidor_profile"
+                              render={({ field }) => (
+                                <FormItem className="space-y-3" onChange={handleChange}>
+                                  <FormLabel>{steps[5].questoes_da_etapa[0].questao.texto_da_questao}</FormLabel>
+                                  <FormControl>
+                                    <RadioGroup
+                                      onValueChange={field.onChange}
+                                      defaultValue={field.value}
+                                    >
+                                      {steps[5].questoes_da_etapa[0].questao.opcoes_de_resposta.map((item: any, index: number) => (
+                                        <FormItem className="flex items-center radio-item gap-4 rounded-sm border bg-white px-4 py-2" key={index}>
+                                          <FormControl>
+                                            <RadioGroupItem value={item.opcao_de_resposta_multipla} />
+                                          </FormControl>
+                                          <FormLabel className="text-[15px]">
+                                            {item.opcao_de_resposta_multipla}
+                                          </FormLabel>
+                                        </FormItem>
+
+                                      ))}
+
+                                    </RadioGroup>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                        </motion.div>
+
+                      </div >
+
+                      <div className="pb-5 flex flex-col items-center">
+                        <Button className={cn(
+                          "h-[56px] w-full max-w-[326px] bg-highlight text-base font-bold text-black absolute bottom-10", {
+                          'hidden': formStep == (steps.length - 1),
+                        })} type="button" onClick={() => {
+
+                          if (formStep == 0) {
+                            form.trigger("name")
+                            const nameState = form.getFieldState("name");
+                            if (!nameState.isDirty || nameState.invalid) return;
+                            setFormStep(formStep + 1);
+                          } else if (formStep == 1) {
+                            form.trigger(["email", "phone"])
+                            const emailState = form.getFieldState("email");
+                            const phoneState = form.getFieldState("phone");
+                            if (!emailState.isDirty || emailState.invalid) return;
+                            if (!phoneState.isDirty || phoneState.invalid) return;
+                            setFormStep(formStep + 1);
+                          } else if (formStep == 2) {
+                            form.trigger(["age", "gender"])
+                            const ageState = form.getFieldState("age");
+                            const genderState = form.getFieldState("gender");
+                            if (!ageState.isDirty || ageState.invalid) return;
+                            if (!genderState.isDirty || genderState.invalid) return;
+                            setFormStep(formStep + 1);
+                          } else if (formStep == 3) {
+                            form.trigger("retire_age")
+                            const retireAgeState = form.getFieldState("retire_age");
+                            if (!retireAgeState.isDirty || retireAgeState.invalid) return
+                            setFormStep(formStep + 1);
+                          } else if (formStep == 4) {
+                            form.trigger(["initial_investment", "month_investment"])
+                            const initialInvestmentState = form.getFieldState("initial_investment");
+                            const monthInvestmentState = form.getFieldState("month_investment");
+                            if (!initialInvestmentState.isDirty || initialInvestmentState.invalid) return;
+                            if (!monthInvestmentState.isDirty || monthInvestmentState.invalid) return;
+                            setFormStep(formStep + 1);
+                          } else if (formStep == 5) {
+                            form.trigger("investidor_profile")
+                            const investidorProfileAgeState = form.getFieldState("investidor_profile");
+                            if (!investidorProfileAgeState.isDirty || investidorProfileAgeState.invalid) return;
+                            setFormStep(formStep + 1);
                           }
-                        })}
+                        }}
+                        >
+                          Ok
+                          <Check width={24} height={24} className="ml-1.5" />
+                        </Button>
+
+                        <Button className={cn(
+                          "h-[56px] w-full max-w-[326px] bg-highlight text-base font-bold text-black absolute bottom-10", {
+                          'hidden': formStep !== (steps.length - 1),
+                        })} type="submit"
+                        >
+                          Entrar
+                          <ArrowRight width={24} height={24} className="ml-1.5" />
+                        </Button>
                       </div>
-
-                      <Button className={cn("h-[56px] w-full max-w-[326px] bg-highlight text-base font-bold text-black absolute bottom-10", {
-                        'hidden': index == (steps.length - 1),
-                        // 'hidden': isEmpty == true,
-                      })} type="button" onClick={() => {
-                        setFormStep(formStep + 1);
-                        // setIsEmpty(true)
-                      }}>
-                        Ok
-                        <Check width={24} height={24} className="ml-1.5" />
-                      </Button>
-                      <Button className={cn("h-[56px] w-full bg-highlight text-base font-bold text-black mt-[34px]", {
-                        'hidden': index !== (steps.length - 1),
-                      })} type="submit"
-                      // {...(index !== (steps.length - 1) && { disabled: true })}
-                      >
-                        Entrar
-                        <ArrowRight width={24} height={24} className="ml-1.5" />
-                      </Button>
-
                     </form>
-
-                  </CardContent>
-
-                ))
-              }
+                  </Form>
+                </CardContent>
+              </div >
             </Card >
           </>
         )
@@ -362,7 +565,3 @@ export function CardWithForm() {
   );
 }
 export default CardWithForm;
-function calculateFinalInvestment(initialInvestiment: number) {
-  throw new Error("Function not implemented.");
-}
-

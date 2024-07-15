@@ -1,17 +1,19 @@
 import { z } from "zod";
 
 export const registerSchema = z.object({
-  name: z.string().min(3, { message: "Digite seu nome" }).max(255),
-  email: z.string().email({ message: "Digite seu email" }),
-  phone: z.string().min(10, { message: "Digite seu telefone" }),
-  age: z.string(),
-  retire_age: z.string(),
+  name: z.string().min(3, { message: "Digite seu nome" }),
+  // email: z.string().email("Digite um email válido"),
+  email: z.coerce.string().email().min(5 , {message: "Digite um email válido"}),
+  phone: z.string().min(11, {message: "Digite um telefone válido"}),
+  // age: z.coerce.number().min(2, {message:"Digite um idade válida"}).max(100),
+  age: z.string().min(2, {message:"Digite um idade válida"}).max(100),
+  // retire_age: z.coerce.number().min(2, {message:"Digite um idade válida"}).max(100),
+  retire_age: z.string().min(2, {message:"Digite um idade válida"}).max(100),
+  // initial_investment: z.coerce.number(),
   initial_investment: z.string(),
-  month_investment: z.number(),
-  gender: z.enum(["Fem", "Masc"], {
-    required_error: "You need to select a notification type. A/B",
-  }),
-  investidor_profile:  z.enum(["a", "b", "c"], {
-    required_error: "You need to select a notification type. MULTI",
-  }),
+  // month_investment: z.coerce.number(),
+  month_investment: z.string(),
+  gender: z.string().min(2, { message: "Selecione um gênero" }).max(10),
+  investidor_profile: z.string().min(1, { message: "Selecione um perfil" }).max(255),
 });
+
