@@ -105,7 +105,7 @@ export function CardWithForm() {
     const SalarioPrevidencia = (ValorPrevidencia * rateA) / (1 - Math.pow((1 + rateA), -(ageLimit - userRetireAge)))
     const SalarioPoupanca = (ValorPoupanca * rateB) / (1 - Math.pow((1 + rateB), -(ageLimit - userRetireAge)))
 
-    const ValorAcumulado = userPv + (Number(userPmt) * period)
+    const ValorAcumulado = Number(userPv) + (Number(userPmt) * period)
 
     const simulationData = { ...formData, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado }
 
