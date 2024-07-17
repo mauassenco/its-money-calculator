@@ -65,29 +65,12 @@ export const formatNumber = (value: any) => {
 
 
 export const formatToReais = (e: React.ChangeEvent<HTMLInputElement>) => {
-  // let cleanedValue = value.replace(/[^0-9]/g, '')
-  // let value = e.target.value;
-  // value = value.replace(/\D/g, "");
-  // value = value.replace(/(\d)(\d{2})$/,"$1, $2");
-  // value = value.replace(/(?=(\d{3})+(\D))\B/g, ".");
-  // e.target.value = value;
-  // return value;
-
-   
-    let value = e.target.value;
-
-
+  let value = e.target.value;
   value = value.replace(/\D/g, "");
-  // value = value.replace(/(\d)(\d{0})$/,"$1R$$2");
-    value = value.replace(/(\d)(\d{2})$/,"$1, $2");
-    value = value.replace(/(?=(\d{3})+(\D))\B/g, ".");
-    e.target.value = `R$ ${value}`
-  
-    // Apply formatting for thousands separators and decimals
-    // value = value.replace(/(\d)(?=(\d{3})+$)/g, '$1,'); // Add commas for thousands
-    // value = value.replace(/(\d{2})$/, ', $2'); // Add comma after two decimal places
-  
-    // Update the input value
-    // e.target.value = value;
-    return value;
+
+  return value
+    .replace(/\D/g, "")
+    .replace(/(\d{0})(\d)/, '$1R$ $2')
+    .replace(/(\d)(\d{2})$/, "$1, $2")
+    .replace(/(?=(\d{3})+(\D))\B/g, ".")
 };
