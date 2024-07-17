@@ -34,7 +34,7 @@ import {
   FormMessage,
 } from "./ui/form";
 import { motion } from "framer-motion";
-import { formatMoney, formatNumber, formatPhone } from "../_lib/functions"
+import { formatMoney, formatNumber, formatPhone, formatToReais } from "../_lib/functions"
 
 type Input = z.infer<typeof registerSchema>
 
@@ -436,7 +436,7 @@ export function CardWithForm() {
                                       className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
                                       onChange={(e) => {
                                         const { value } = e.target;
-                                        e.target.value = formatMoney(value);
+                                        e.target.value = formatToReais(e);
                                         field.onChange(e)
                                       }}
                                     />
