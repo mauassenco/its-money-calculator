@@ -303,7 +303,7 @@ export function CardWithForm() {
                                     <Input
                                       required
                                       placeholder={steps[2].questoes_da_etapa[0].questao.texto_do_placeholder}
-                                      // {...field}
+                                      {...field}
                                       className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
                                       onChange={(e) => {
                                         const { value } = e.target;
@@ -385,7 +385,7 @@ export function CardWithForm() {
                                     <Input
                                       required
                                       placeholder={steps[3].questoes_da_etapa[0].questao.texto_do_placeholder}
-                                      // {...field}
+                                      {...field}
                                       className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
                                       onChange={(e) => {
                                         const { value } = e.target;
