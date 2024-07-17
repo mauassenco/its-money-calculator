@@ -34,7 +34,7 @@ import {
   FormMessage,
 } from "./ui/form";
 import { motion } from "framer-motion";
-import { formatMoney, formatNumber, formatPhone, formatToReais } from "../_lib/functions"
+import { formatNumber, formatPhone, formatToNumber, formatToReais } from "../_lib/functions"
 
 type Input = z.infer<typeof registerSchema>
 
@@ -86,26 +86,26 @@ export function CardWithForm() {
 
     const userAge = Number(formData.age)
     const userRetireAge = Number(formData.retire_age)
-    const userPv = Number(formData.initial_investment)
-    const userPmt = Number(formData.month_investment)
-
+    const userPv = formatToNumber(String(formData.initial_investment))
+    const userPmt = formatToNumber(String(formData.month_investment))
+    // console.log(extractRealValue(userPv as any))
     const rateA = 0.00678
     const rateB = 0.0033
     const period = (userRetireAge - userAge) * 12
     const ageLimit = 100
 
     const ValorPrevidencia =
-      (userPv * Math.pow((1 + rateA), period)) +
-      (userPmt * (Math.pow((1 + rateA), period) - 1) / rateA)
+      (Number(userPv) * Math.pow((1 + rateA), period)) +
+      (Number(userPmt) * (Math.pow((1 + rateA), period) - 1) / rateA)
 
     const ValorPoupanca =
-      (userPv * Math.pow((1 + rateB), period)) +
-      (userPmt * (Math.pow((1 + rateB), period) - 1) / rateB)
+      (Number(userPv) * Math.pow((1 + rateB), period)) +
+      (Number(userPmt) * (Math.pow((1 + rateB), period) - 1) / rateB)
 
     const SalarioPrevidencia = (ValorPrevidencia * rateA) / (1 - Math.pow((1 + rateA), -(ageLimit - userRetireAge)))
     const SalarioPoupanca = (ValorPoupanca * rateB) / (1 - Math.pow((1 + rateB), -(ageLimit - userRetireAge)))
 
-    const ValorAcumulado = userPv + (userPmt * period)
+    const ValorAcumulado = userPv + (Number(userPmt) * period)
 
     const simulationData = { ...formData, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado }
 

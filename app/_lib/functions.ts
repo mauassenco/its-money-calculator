@@ -71,6 +71,19 @@ export const formatToReais = (e: React.ChangeEvent<HTMLInputElement>) => {
   return value
     .replace(/\D/g, "")
     .replace(/(\d{0})(\d)/, '$1R$ $2')
-    .replace(/(\d)(\d{2})$/, "$1, $2")
+    .replace(/(\d)(\d{2})$/, "$1,$2")
     .replace(/(?=(\d{3})+(\D))\B/g, ".")
+};
+
+export const formatToNumber = (formattedValue: string): string => {
+  // Remove "R$"
+  const cleanedValue = formattedValue.replace(/^R\$ /, '');
+
+  // Replace "," with "."
+  const valueWithoutComma = cleanedValue.replace(/,/g, '.');
+
+  // Remove "." if it's the first or last character
+  const valueWithoutLeadingOrTrailingDots = valueWithoutComma.replace(/^\.|\.$/g, '');
+
+  return valueWithoutLeadingOrTrailingDots;
 };
