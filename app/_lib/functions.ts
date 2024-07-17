@@ -87,3 +87,10 @@ export const formatToNumber = (formattedValue: string): string => {
 
   return valueWithoutLeadingOrTrailingDots;
 };
+
+export const extractNumbers = (phoneNumber: string): string => {
+  // Remove non-numeric characters
+  const cleanedNumber = phoneNumber.replace(/[^0-9]/g, '');
+
+  return cleanedNumber;
+};

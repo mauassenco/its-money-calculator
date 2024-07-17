@@ -126,8 +126,8 @@ export function CardWithForm() {
               <div className="">
                 <p className="text[17px] leading-7 text-[#000]">Deseja sair do simulador?</p>
               </div>
-              <div className="bottom-4 right-4 flex items-center gap-1 rounded border border-highlight px-4 py-[9px] shadow-cst2 transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-secondary">
-                <span className="text-sm font-bold text-[#000]">Sair</span>
+              <div className="bottom-4 right-4 flex items-center gap-1 rounded border border-highlight px-4 py-[9px] shadow-cst2 transition-opacity ct  focus:outline-none disabled:pointer-events-none data-[state=open]:bg-secondary  hover:bg-highlight hover:shadow-lg cursor-pointer" >
+                <span className="text-sm font-bold text-[#000]  ">Sair</span>
                 <LogOut className="z-10 h-4 w-4 tex" />
               </div>
             </div>
@@ -161,10 +161,10 @@ export function CardWithForm() {
                 <CardDescription></CardDescription>
               </CardHeader>
               <div>
-                <CardContent className="">
+                <CardContent className="overflow-hidden">
                   <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)}>
-                      <div className="pt-10 relative overflow-x-hidden h-[66vh]">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="overflow-hidden">
+                      <div className="pt-10 relative overflow-x-hidden h-[66vh] ">
 
                         {/* Nome */}
                         <motion.div className={
@@ -490,13 +490,14 @@ export function CardWithForm() {
                               {parse(steps[5].texto_da_etapa)}
                             </h2>
                           </div>
-                          <div className="space-y-4">
+                          <div className="space-y-4 mb-[40px]">
                             <FormField
                               control={form.control}
                               name="investidor_profile"
                               render={({ field }) => (
                                 <FormItem className="space-y-3" onChange={handleChange}>
                                   <FormLabel>{steps[5].questoes_da_etapa[0].questao.texto_da_questao}</FormLabel>
+                                  <FormMessage />
                                   <FormControl>
                                     <RadioGroup
                                       onValueChange={field.onChange}
@@ -516,7 +517,7 @@ export function CardWithForm() {
 
                                     </RadioGroup>
                                   </FormControl>
-                                  <FormMessage />
+
                                 </FormItem>
                               )}
                             />
