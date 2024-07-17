@@ -22,7 +22,7 @@ import WhatssappIcon from "./icons/WhatssappIcon"
 import PlusIconCustom from "./icons/PlusIconCustom"
 import HandOnFile from "./icons/HandOnFile"
 import { useContext, useState } from "react"
-import { checkNumberType, formatMoney, formatNumberWithSeparators, extractNumbers } from "../_lib/functions"
+import { checkNumberType, formatMoney, formatNumberWithSeparators, extractNumbers, formatToReaisB } from "../_lib/functions"
 import { AcfFieldsContext } from "../context/AcfFields"
 import parse from 'html-react-parser'
 
@@ -346,6 +346,7 @@ export function SimulationResult() {
                 </g>
               </svg>
               <input type="text" name="initial_investment" className="grow" placeholder="Investimento (inicial)" onChange={handleChange} />
+
             </label>
             <label className="input flex items-center  rounded gap-2 h-[56px] bg-white bsx-sm-v2 border border-gray-600;">
               <svg

@@ -76,21 +76,25 @@ export const formatToReais = (e: React.ChangeEvent<HTMLInputElement>) => {
 };
 
 export const formatToNumber = (formattedValue: string): string => {
-  // Remove "R$"
   const cleanedValue = formattedValue.replace(/^R\$ /, '');
-
-  // Replace "," with "."
   const valueWithoutComma = cleanedValue.replace(/,/g, '.');
-
-  // Remove "." if it's the first or last character
   const valueWithoutLeadingOrTrailingDots = valueWithoutComma.replace(/^\.|\.$/g, '');
+  console.log(+valueWithoutLeadingOrTrailingDots)
 
   return valueWithoutLeadingOrTrailingDots;
 };
 
 export const extractNumbers = (phoneNumber: string): string => {
-  // Remove non-numeric characters
   const cleanedNumber = phoneNumber.replace(/[^0-9]/g, '');
-
   return cleanedNumber;
 };
+
+export const formatToReaisB = (e: React.ChangeEvent<HTMLInputElement>) => { 
+  let value = e.target.value;
+  value = value.replace(/\D/g, "");
+  value = value.replace(/(\d{0})(\d)/, '$1R$ $2')
+  value = value.replace(/(\d)(\d{2})$/, "$1,$2")
+  value = value.replace(/(?=(\d{3})+(\D))\B/g, ".")
+
+  return e
+}

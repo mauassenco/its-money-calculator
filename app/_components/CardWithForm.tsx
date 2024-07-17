@@ -85,27 +85,30 @@ export function CardWithForm() {
     setFormStep((Number(AcfData?.etapas?.length)))
 
     const userAge = Number(formData.age)
-    const userRetireAge = Number(formData.retire_age)
-    const userPv = formatToNumber(String(formData.initial_investment))
-    const userPmt = formatToNumber(String(formData.month_investment))
-    // console.log(extractRealValue(userPv as any))
+    const userRetireAge = Number(formData.retire_age);
+    const userPv = formatToNumber(String(formData.initial_investment));
+    const userPmt = formatToNumber(String(formData.month_investment));
+
     const rateA = 0.00678
     const rateB = 0.0033
     const period = (userRetireAge - userAge) * 12
     const ageLimit = 100
 
+
     const ValorPrevidencia =
-      (Number(userPv) * Math.pow((1 + rateA), period)) +
-      (Number(userPmt) * (Math.pow((1 + rateA), period) - 1) / rateA)
+      (parseFloat(userPv) * Math.pow((1 + rateA), period)) +
+      (parseFloat(userPmt) * (Math.pow((1 + rateA), period) - 1) / rateA)
+
+
 
     const ValorPoupanca =
-      (Number(userPv) * Math.pow((1 + rateB), period)) +
-      (Number(userPmt) * (Math.pow((1 + rateB), period) - 1) / rateB)
+      (parseFloat(userPv) * Math.pow((1 + rateB), period)) +
+      (parseFloat(userPmt) * (Math.pow((1 + rateB), period) - 1) / rateB)
 
     const SalarioPrevidencia = (ValorPrevidencia * rateA) / (1 - Math.pow((1 + rateA), -(ageLimit - userRetireAge)))
     const SalarioPoupanca = (ValorPoupanca * rateB) / (1 - Math.pow((1 + rateB), -(ageLimit - userRetireAge)))
 
-    const ValorAcumulado = Number(userPv) + (Number(userPmt) * period)
+    const ValorAcumulado = parseFloat(userPv) + (parseFloat(userPmt) * period)
 
     const simulationData = { ...formData, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado }
 
@@ -163,12 +166,12 @@ export function CardWithForm() {
               <div>
                 <CardContent className="overflow-hidden">
                   <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="overflow-hidden">
-                      <div className="pt-10 relative overflow-x-hidden h-[66vh] ">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="">
+                      <div className="pt-10 relative overflow-hidden h-[66vh]">
 
                         {/* Nome */}
                         <motion.div className={
-                          cn("h-[full] flex flex-col gap-12 px-1", {
+                          cn(" flex flex-col gap-12 px-1 overflow-auto", {
                             // 'hidden': formStep != 0,
                           })}
                           animate={{
@@ -186,13 +189,13 @@ export function CardWithForm() {
                               {parse(steps[0].texto_da_etapa)}
                             </h2>
                           </div>
-                          <div className="">
+                          <div className="py-4">
                             <FormField
                               control={form.control}
                               name="name"
                               render={({ field }) => (
                                 <FormItem onChange={handleChange}>
-                                  <FormLabel className="text-[17px]  leading-7">{steps[0].questoes_da_etapa[0].questao.texto_da_questao}</FormLabel>
+                                  <FormLabel className="text-[17px] leading-7">{steps[0].questoes_da_etapa[0].questao.texto_da_questao}</FormLabel>
                                   <FormControl>
                                     <Input
                                       required
@@ -210,7 +213,7 @@ export function CardWithForm() {
 
                         {/* Email e Telefone */}
                         <motion.div className={
-                          cn("absolute top-10 left-0 right-0 px-1", {
+                          cn("absolute top-10 left-0 right-0 px-1 h-[66vh] overflow-auto", {
                             // 'hidden': formStep != 1,
                           })}
                           animate={{
@@ -219,16 +222,16 @@ export function CardWithForm() {
                           transition={{
                             ease: "easeInOut"
                           }}>
-                          <div className="space-y-6 mb-12">
+                          <div className="space-y-6 mb-12 ">
                             <h2 className="text-2xl font-bold">
                               {parse(steps[1].titulo_da_etapa)}
                               {' '} {clientName}
                             </h2>
-                            <h2 className="text-[17px]  leading-7">
+                            <h2 className="text-[17px] leading-7">
                               {parse(steps[1].texto_da_etapa)}
                             </h2>
                           </div>
-                          <div className="space-y-4">
+                          <div className="space-y-4 h-full">
                             <FormField
                               control={form.control}
                               name="email"
@@ -275,7 +278,7 @@ export function CardWithForm() {
 
                         {/* Idade e Gênero */}
                         <motion.div className={
-                          cn("absolute top-10 left-0 right-0 px-1", {
+                          cn("absolute top-10 left-0 right-0 px-1 h-[66vh] overflow-scroll", {
                             // 'hidden': formStep != 2,
                           })}
                           animate={{
@@ -292,7 +295,7 @@ export function CardWithForm() {
                               {parse(steps[2].texto_da_etapa)}
                             </h2>
                           </div>
-                          <div className="space-y-4">
+                          <div className="space-y-4 h-full">
                             <FormField
                               control={form.control}
                               name="age"
@@ -403,7 +406,7 @@ export function CardWithForm() {
 
                         {/* Investimento Inicial e Investimento Mensal */}
                         <motion.div className={
-                          cn("absolute top-10 left-0 right-0 px-1", {
+                          cn("absolute top-10 left-0 right-0 px-1 h-[66vh] overflow-scroll", {
                             'hidden': formStep != 4,
                           })}
                           animate={{
@@ -421,7 +424,7 @@ export function CardWithForm() {
                               {parse(steps[4].texto_da_etapa)}
                             </h2>
                           </div>
-                          <div className="space-y-4">
+                          <div className="space-y-4 h-full">
                             <FormField
                               control={form.control}
                               name="initial_investment"
@@ -473,7 +476,7 @@ export function CardWithForm() {
 
                         {/* Perfil do Investidor*/}
                         <motion.div className={
-                          cn("absolute top-10 left-0 right-0 px-1", {
+                          cn("absolute top-10 left-0 right-0 px-1  overflow-auto", {
                             'hidden': formStep != 5,
                           })}
                           animate={{
@@ -482,7 +485,7 @@ export function CardWithForm() {
                           transition={{
                             ease: "easeInOut"
                           }}>
-                          <div className="space-y-6 mb-12">
+                          <div className="space-y-6 mb-12 ">
                             <h2 className="text-2xl font-bold">
                               {parse(steps[5].titulo_da_etapa)}
                             </h2>
@@ -490,7 +493,7 @@ export function CardWithForm() {
                               {parse(steps[5].texto_da_etapa)}
                             </h2>
                           </div>
-                          <div className="space-y-4 mb-[40px]">
+                          <div className="space-y-4 mb-[40px] h-full">
                             <FormField
                               control={form.control}
                               name="investidor_profile"
@@ -526,9 +529,9 @@ export function CardWithForm() {
 
                       </div >
 
-                      <div className="pb-5 flex flex-col items-center">
+                      <div className="pb-5 flex flex-col items-center absolute bottom-0 left-0 w-full">
                         <Button className={cn(
-                          "ct h-[56px] w-full max-w-[326px] bg-highlight text-base font-bold text-black absolute bottom-10", {
+                          "ct h-[56px] w-full max-w-[326px] bg-highlight text-base font-bold text-black", {
                           'hidden': formStep == (steps.length - 1),
                         })} type="button" onClick={() => {
 
@@ -576,7 +579,7 @@ export function CardWithForm() {
                         </Button>
 
                         <Button className={cn(
-                          "ct h-[56px] w-full max-w-[326px] bg-highlight text-base font-bold text-black absolute bottom-10", {
+                          "ct h-[56px] w-full max-w-[326px] bg-highlight text-base font-bold text-black ", {
                           'hidden': formStep !== (steps.length - 1),
                         })} type="submit"
                         >
