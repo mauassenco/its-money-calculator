@@ -22,7 +22,7 @@ import WhatssappIcon from "./icons/WhatssappIcon"
 import PlusIconCustom from "./icons/PlusIconCustom"
 import HandOnFile from "./icons/HandOnFile"
 import { useContext, useState } from "react"
-import { checkNumberType, formatMoney, formatNumberWithSeparators, extractNumbers, formatToReaisB } from "../_lib/functions"
+import { checkNumberType, formatMoney, formatNumberWithSeparators, extractNumbers, formatToReaisB, formatToReais } from "../_lib/functions"
 import { AcfFieldsContext } from "../context/AcfFields"
 import parse from 'html-react-parser'
 
@@ -94,7 +94,7 @@ export function SimulationResult() {
     storedData.push({ simulationData });
     window.sessionStorage.setItem('Simulações', JSON.stringify(storedData));
 
-    const form = e.target as HTMLFormElement; // Get the form element from the event object
+    const form = e.target as HTMLFormElement;
     form.reset();
     document.getElementById('close-x')?.click()
 
@@ -345,7 +345,15 @@ export function SimulationResult() {
                   ></path>
                 </g>
               </svg>
-              <input type="text" name="initial_investment" className="grow" placeholder="Investimento (inicial)" onChange={handleChange} />
+              <input
+                type="text"
+                name="initial_investment"
+                className="grow"
+                placeholder="Investimento (inicial)"
+                onChange={(e) => {
+                  const { value } = e.target;
+                  e.target.value = formatToReais(e);
+                }} />
 
             </label>
             <label className="input flex items-center  rounded gap-2 h-[56px] bg-white bsx-sm-v2 border border-gray-600;">
@@ -374,7 +382,10 @@ export function SimulationResult() {
                   ></path>
                 </g>
               </svg>
-              <input type="text" name="monthly_investment" className="grow" placeholder="Investimento (mensal)" onChange={handleChange} />
+              <input type="text" name="monthly_investment" className="grow" placeholder="Investimento (mensal)" onChange={(e) => {
+                const { value } = e.target;
+                e.target.value = formatToReais(e);
+              }} />
             </label>
             <label className="input flex items-center  rounded gap-2 h-[56px] bg-white bsx-sm-v2 border border-gray-600;">
               <svg

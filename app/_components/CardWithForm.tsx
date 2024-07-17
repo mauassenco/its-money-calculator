@@ -171,7 +171,7 @@ export function CardWithForm() {
 
                         {/* Nome */}
                         <motion.div className={
-                          cn(" flex flex-col gap-12 px-1 overflow-auto", {
+                          cn(" flex flex-col gap-12 px-1 overflow-hidden", {
                             // 'hidden': formStep != 0,
                           })}
                           animate={{
