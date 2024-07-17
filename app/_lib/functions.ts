@@ -38,18 +38,21 @@ export const formatNumberWithSeparators = (number: number) => {
   return `${extractedInteger}.${extractedDecimalDigit}`
 };
 
-export const formatMoney = (value: number) => {   
+export const formatMoney = (value: any) => {   
   // return `R$${Intl.NumberFormat().format(value)}`;
+  const cleanedValue = value.replace(/[^0-9]/g, '')
   const formatter = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
   });
 
-  const formattedNumber = formatter.format(value);
+  const formattedNumber = formatter.format(cleanedValue);
+
 
   return formattedNumber
 
 };
+
 export const formatPhone = (value: string) => {
   const cleanedValue = value.replace(/[^0-9]/g, '')
   return cleanedValue
