@@ -34,7 +34,7 @@ import {
   FormMessage,
 } from "./ui/form";
 import { motion } from "framer-motion";
-
+import { formatNumber, formatPhone } from "../_lib/functions"
 
 type Input = z.infer<typeof registerSchema>
 
@@ -256,11 +256,14 @@ export function CardWithForm() {
                                   <FormLabel className="text-[17px]  leading-7">{steps[1].questoes_da_etapa[1].questao.texto_da_questao}</FormLabel>
                                   <FormControl>
                                     <Input
-                                      required
                                       placeholder={steps[1].questoes_da_etapa[1].questao.texto_do_placeholder}
                                       {...field}
                                       className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
-                                      type="number"
+                                      onChange={(e) => {
+                                        const { value } = e.target;
+                                        e.target.value = formatPhone(value);
+                                        field.onChange(e)
+                                      }}
                                     />
                                   </FormControl>
                                   <FormMessage />
@@ -300,9 +303,13 @@ export function CardWithForm() {
                                     <Input
                                       required
                                       placeholder={steps[2].questoes_da_etapa[0].questao.texto_do_placeholder}
-                                      {...field}
+                                      // {...field}
                                       className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
-                                      type="number"
+                                      onChange={(e) => {
+                                        const { value } = e.target;
+                                        e.target.value = formatNumber(value);
+                                        field.onChange(e)
+                                      }}
                                     />
                                   </FormControl>
                                   <FormMessage />
@@ -378,9 +385,13 @@ export function CardWithForm() {
                                     <Input
                                       required
                                       placeholder={steps[3].questoes_da_etapa[0].questao.texto_do_placeholder}
-                                      {...field}
+                                      // {...field}
                                       className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
-                                      type="number"
+                                      onChange={(e) => {
+                                        const { value } = e.target;
+                                        e.target.value = formatNumber(value);
+                                        field.onChange(e)
+                                      }}
                                     />
                                   </FormControl>
                                   <FormMessage />
@@ -423,7 +434,11 @@ export function CardWithForm() {
                                       placeholder={steps[4].questoes_da_etapa[0].questao.texto_do_placeholder}
                                       {...field}
                                       className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
-                                      type="number"
+                                      onChange={(e) => {
+                                        const { value } = e.target;
+                                        e.target.value = formatNumber(value);
+                                        field.onChange(e)
+                                      }}
                                     />
                                   </FormControl>
                                   <FormMessage />
@@ -442,7 +457,11 @@ export function CardWithForm() {
                                       placeholder={steps[4].questoes_da_etapa[1].questao.texto_do_placeholder}
                                       {...field}
                                       className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]"
-                                      type="number"
+                                      onChange={(e) => {
+                                        const { value } = e.target;
+                                        e.target.value = formatNumber(value);
+                                        field.onChange(e)
+                                      }}
                                     />
                                   </FormControl>
                                   <FormMessage />
@@ -508,7 +527,7 @@ export function CardWithForm() {
 
                       <div className="pb-5 flex flex-col items-center">
                         <Button className={cn(
-                          "h-[56px] w-full max-w-[326px] bg-highlight text-base font-bold text-black absolute bottom-10", {
+                          "ct h-[56px] w-full max-w-[326px] bg-highlight text-base font-bold text-black absolute bottom-10", {
                           'hidden': formStep == (steps.length - 1),
                         })} type="button" onClick={() => {
 
@@ -556,7 +575,7 @@ export function CardWithForm() {
                         </Button>
 
                         <Button className={cn(
-                          "h-[56px] w-full max-w-[326px] bg-highlight text-base font-bold text-black absolute bottom-10", {
+                          "ct h-[56px] w-full max-w-[326px] bg-highlight text-base font-bold text-black absolute bottom-10", {
                           'hidden': formStep !== (steps.length - 1),
                         })} type="submit"
                         >

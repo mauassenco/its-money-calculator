@@ -50,3 +50,17 @@ export const formatMoney = (value: number) => {
   return formattedNumber
 
 };
+export const formatPhone = (value: string) => {
+  const cleanedValue = value.replace(/[^0-9]/g, '')
+  return cleanedValue
+  .replace(/(\d{0})(\d)/, '$1($2')
+  .replace(/(\d{2})(\d)/, '$1)$2')
+  .replace(/(\d{5})(\d{1,2})/, '$1-$2')
+  .replace(/(-\d{4})\d+?$/, '$1');
+};
+
+export const formatNumber = (value: any) => {
+  const cleanedValue = value.replace(/[^0-9]/g, '')
+  // const limitedValue = cleanedValue.slice(0, 3)
+  return cleanedValue
+};

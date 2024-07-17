@@ -61,7 +61,7 @@ const Hero = () => {
                 <SheetTrigger asChild>
 
                   <Button
-                    className="flex h-14 w-full gap-2 bg-highlight text-base font-semibold text-black md:mb-10 md:max-w-80"
+                    className="ct flex h-14 w-full gap-2 bg-highlight text-base font-semibold text-black md:mb-10 md:max-w-80"
                     variant="default"
                   >
                     {AcfData?.cta_label}

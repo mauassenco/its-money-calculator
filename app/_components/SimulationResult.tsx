@@ -107,6 +107,10 @@ export function SimulationResult() {
 
   const link = `https://wa.me/+55${simulationDataItems.phone}?text=${encodeMessage}`
 
+  const handleSendWhatssapp = () => {
+    const targetWindow = window.open(link, '_blank');
+  };
+
   return (
     <Tabs defaultValue="salary" className="w-full pb-10 " id="tabs">
       <div className="w-full bg-highlight flex items-center justify-between h-[64px] pl-2 pr-6">
@@ -240,7 +244,7 @@ export function SimulationResult() {
             </div>
           </div>
           <div className="flex justify-center mt-8">
-            <Button className="font-bold text-sm leading-[18px] text-black text-center bg-white bxs-sm px-8">Quero uma avaliação personalizada</Button>
+            <Button className="ct font-bold text-sm leading-[18px] text-black text-center bg-white bxs-sm px-8">Quero uma avaliação personalizada</Button>
           </div>
         </div>
       </Card>
@@ -401,7 +405,7 @@ export function SimulationResult() {
             </label>
 
             <div className="pt-8" >
-              <Button className=" relative w-full h-[56px] bg-highlight rounded bxs-sm" type="submit" >
+              <Button className="ct relative w-full h-[56px] bg-highlight rounded bxs-sm" type="submit" >
                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
                   <mask id="mask0_9533_90" maskUnits="userSpaceOnUse" x="0" y="0" width="25" height="24">
                     <rect x="0.5" width="24" height="24" fill="#D9D9D9" />
@@ -433,12 +437,16 @@ export function SimulationResult() {
           <div>
             <p className="text-[17px] text-black">Resultados enviados com sucesso para o seu contato!</p>
           </div>
-          <div className="modal-action cursor-pointer">
+          <div className="modal-action cursor-pointer flex justify-center">
             {/* <label htmlFor="send_to_whatsapp" className="" id="close-x"></label> */}
             <label htmlFor="send_to_whatsapp" className="w-[287px]" id="close-x">
-              <a href={link} target="_blank" rel="noopener noreferrer">
-                <p className="bxs-sm flex items-center justify-center h-[56px] w-full max-w-[326px] bg-highlight text-base font-bold text-black text-center rounded hover:bg-[#0FF]">Entendi</p>
-              </a>
+              <div className="" onClick={handleSendWhatssapp}>
+                <a href={link} target="_blank" rel="noopener noreferrer">
+                  <p className="ct bxs-sm flex items-center justify-center h-[56px] w-full max-w-[326px] bg-highlight text-base font-bold text-black text-center rounded hover:bg-[#0FF] relative">
+                    <label htmlFor="send_to_whatsapp" className="absolute top-0 left-0 w-full h-full" id="close-x"></label>
+                    Entendi</p>
+                </a>
+              </div>
             </label>
           </div>
         </div>

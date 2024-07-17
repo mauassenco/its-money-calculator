@@ -114,7 +114,7 @@ function NewSimulationForm() {
           </label>
           ``
           <div className="pt-8" >
-            <Button className=" w-full h-[56px] bg-highlight rounded bxs-sm" type="submit">
+            <Button className="ct w-full h-[56px] bg-highlight rounded bxs-sm" type="submit">
               <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
                 <mask id="mask0_9533_90" maskUnits="userSpaceOnUse" x="0" y="0" width="25" height="24">
                   <rect x="0.5" width="24" height="24" fill="#D9D9D9" />

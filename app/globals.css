@@ -228,3 +228,7 @@
   content: url("/assets/images/indeterminate_check_box.svg") !important;
   background-size: cover;
 }
+
+.ct {
+  transition: all ease-in-out 350ms;
+}
