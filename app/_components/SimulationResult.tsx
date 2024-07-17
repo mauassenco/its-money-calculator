@@ -251,8 +251,8 @@ export function SimulationResult() {
 
       <Card>
         <div className="flex gap-2 py-0 px-4">
-          <div className="ct rounded flex flex-col items-center border border-highlight w-[50%] bg-white p-4 gap-4 hover:shadow-md">
-            <label htmlFor="send_to_whatsapp" className="ct flex flex-col items-center gap-4 bg-white border-none hover:bg-white " >
+          <div className="ct rounded flex flex-col items-center border border-highlight w-[50%] bg-white p-4 gap-4 hover:shadow-md cursor-pointer">
+            <label htmlFor="send_to_whatsapp" className="ct cursor-pointer flex flex-col items-center gap-4 bg-white border-none hover:bg-white " >
               <div className="w-12 h-12">
                 <WhatssappIcon />
               </div>
@@ -264,7 +264,7 @@ export function SimulationResult() {
 
           <div className="ct rounded flex flex-col items-center border border-highlight w-[50%] bg-white p-4 gap-4 hover:shadow-md">
 
-            <label htmlFor="new_simulation" className="flex flex-col items-center gap-4 bg-white border-none hover:bg-white" >
+            <label htmlFor="new_simulation" className="cursor-pointer flex flex-col items-center gap-4 bg-white border-none hover:bg-white" >
               <div className="w-12 h-12">
                 <PlusIconCustom />
               </div>
@@ -282,7 +282,7 @@ export function SimulationResult() {
         <div className="join join-vertical w-full py-0 px-4 pt-4 bg-[180 100% 45%]">
           <div className="collapse collapse-arrow border-highlight border rounded mb-6 bg-white">
             <input type="checkbox" name="simulations-history" />
-            <div className="collapse-title text-[15px] ">Histórico de simulações</div>
+            <div className="collapse-title text-[15px] cursor-pointer">Histórico de simulações</div>
 
             <div className="collapse-content rounded space-y-4">
 

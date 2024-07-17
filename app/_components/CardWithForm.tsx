@@ -167,7 +167,7 @@ export function CardWithForm() {
                 <CardContent className="overflow-hidden">
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="">
-                      <div className="pt-10 relative overflow-hidden h-[66vh]">
+                      <div className="pt-10 relative overflow-auto h-[66vh]">
 
                         {/* Nome */}
                         <motion.div className={
@@ -476,7 +476,7 @@ export function CardWithForm() {
 
                         {/* Perfil do Investidor*/}
                         <motion.div className={
-                          cn("absolute top-10 left-0 right-0 px-1  overflow-auto", {
+                          cn("absolute top-10 left-0 right-0 px-1", {
                             'hidden': formStep != 5,
                           })}
                           animate={{
@@ -493,18 +493,19 @@ export function CardWithForm() {
                               {parse(steps[5].texto_da_etapa)}
                             </h2>
                           </div>
-                          <div className="space-y-4 mb-[40px] h-full">
+                          <div className="space-y-4 mb-[40px]">
                             <FormField
                               control={form.control}
                               name="investidor_profile"
                               render={({ field }) => (
-                                <FormItem className="space-y-3" onChange={handleChange}>
+                                <FormItem className="space-y-3 " onChange={handleChange}>
                                   <FormLabel>{steps[5].questoes_da_etapa[0].questao.texto_da_questao}</FormLabel>
                                   <FormMessage />
                                   <FormControl>
                                     <RadioGroup
                                       onValueChange={field.onChange}
                                       defaultValue={field.value}
+                                      className=""
                                     >
                                       {steps[5].questoes_da_etapa[0].questao.opcoes_de_resposta.map((item: any, index: number) => (
                                         <FormItem className="flex items-center radio-item gap-4 rounded-sm border bg-white px-4 py-2" key={index}>

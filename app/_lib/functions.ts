@@ -79,7 +79,6 @@ export const formatToNumber = (formattedValue: string): string => {
   const cleanedValue = formattedValue.replace(/^R\$ /, '');
   const valueWithoutComma = cleanedValue.replace(/,/g, '.');
   const valueWithoutLeadingOrTrailingDots = valueWithoutComma.replace(/^\.|\.$/g, '');
-  console.log(+valueWithoutLeadingOrTrailingDots)
 
   return valueWithoutLeadingOrTrailingDots;
 };
