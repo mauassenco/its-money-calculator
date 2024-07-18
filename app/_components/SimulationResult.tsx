@@ -88,8 +88,6 @@ export function SimulationResult() {
     const period = (userRetireAge - userAge) * 12
     const ageLimit = 100
 
-    console.log('PV', userPv, 'Pmt', userPmt, 'Period', period)
-
     const ValorPrevidencia =
       (userPv * Math.pow((1 + rateA), period)) +
       (userPmt * (Math.pow((1 + rateA), period) - 1) / rateA)
@@ -104,7 +102,6 @@ export function SimulationResult() {
 
     const ValorAcumulado = userPv + userPmt * period
 
-    // console.log(userPv, userPmt, period, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado)
 
     const simulationData = { ...formDataNew, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado }
     let storedData = JSON.parse(window.sessionStorage.getItem('Simulações') || '[]');
