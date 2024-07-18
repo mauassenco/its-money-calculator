@@ -34,7 +34,7 @@ import {
   FormMessage,
 } from "./ui/form";
 import { motion } from "framer-motion";
-import { extractRealNumber, formatNumber, formatPhone, formatToNumber, formatToReais } from "../_lib/functions"
+import { extractRealNumber, formatNumber, formatPhone, formatToReais } from "../_lib/functions"
 
 type Input = z.infer<typeof registerSchema>
 

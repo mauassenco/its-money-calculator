@@ -22,7 +22,7 @@ import WhatssappIcon from "./icons/WhatssappIcon"
 import PlusIconCustom from "./icons/PlusIconCustom"
 import HandOnFile from "./icons/HandOnFile"
 import { useContext, useState } from "react"
-import { checkNumberType, formatMoney, formatNumberWithSeparators, extractNumbers, formatToReaisB, formatToReais, formatToNumber, extractRealNumber } from "../_lib/functions"
+import { checkNumberType, formatMoney, formatNumberWithSeparators, extractNumbers, formatToReaisB, formatToReais, extractRealNumber } from "../_lib/functions"
 import { AcfFieldsContext } from "../context/AcfFields"
 import parse from 'html-react-parser'
 
