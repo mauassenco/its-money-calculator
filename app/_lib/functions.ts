@@ -75,12 +75,12 @@ export const formatToReais = (e: React.ChangeEvent<HTMLInputElement>) => {
     .replace(/(?=(\d{3})+(\D))\B/g, ".")
 };
 
-export const formatToNumber = (formattedValue: string): string => {
+export const formatToNumber = (formattedValue: string): number => {
   const cleanedValue = formattedValue.replace(/^R\$ /, '');
   const valueWithoutComma = cleanedValue.replace(/,/g, '.');
   const valueWithoutLeadingOrTrailingDots = valueWithoutComma.replace(/^\.|\.$/g, '');
 
-  return valueWithoutLeadingOrTrailingDots;
+  return valueWithoutLeadingOrTrailingDots as any;
 };
 
 export const extractNumbers = (phoneNumber: string): string => {
@@ -97,3 +97,13 @@ export const formatToReaisB = (e: React.ChangeEvent<HTMLInputElement>) => {
 
   return e
 }
+
+
+export const extractRealNumber = (value: string): number => {
+
+  return   parseFloat(value.replace(/R\$|\./g, '').replace(',', '.'));
+};
+
+
+
+   

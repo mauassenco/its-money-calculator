@@ -22,7 +22,7 @@ import WhatssappIcon from "./icons/WhatssappIcon"
 import PlusIconCustom from "./icons/PlusIconCustom"
 import HandOnFile from "./icons/HandOnFile"
 import { useContext, useState } from "react"
-import { checkNumberType, formatMoney, formatNumberWithSeparators, extractNumbers, formatToReaisB, formatToReais, formatToNumber } from "../_lib/functions"
+import { checkNumberType, formatMoney, formatNumberWithSeparators, extractNumbers, formatToReaisB, formatToReais, formatToNumber, extractRealNumber } from "../_lib/functions"
 import { AcfFieldsContext } from "../context/AcfFields"
 import parse from 'html-react-parser'
 
@@ -68,8 +68,8 @@ export function SimulationResult() {
     const userAge = Number(sessionStorage.getItem('Idade'));
 
     const userRetireAge = Number(simulationDataItemsNew.retire_age)
-    const userPv = formatToNumber(String(simulationDataItemsNew.monthly_investment));
-    const userPmt = formatToNumber(String(simulationDataItemsNew.initial_investment));
+    const userPv = extractRealNumber(String(simulationDataItemsNew.monthly_investment));
+    const userPmt = extractRealNumber(String(simulationDataItemsNew.initial_investment));
 
     const rateA = 0.00678
     const rateB = 0.0033
@@ -77,18 +77,18 @@ export function SimulationResult() {
     const ageLimit = 100
 
     const ValorPrevidencia =
-      (parseFloat(userPv) * Math.pow((1 + rateA), period)) +
-      (parseFloat(userPmt) * (Math.pow((1 + rateA), period) - 1) / rateA)
+      (userPv * Math.pow((1 + rateA), period)) +
+      (userPmt * (Math.pow((1 + rateA), period) - 1) / rateA)
 
     const ValorPoupanca =
-      (parseFloat(userPv) * Math.pow((1 + rateB), period)) +
-      (parseFloat(userPmt) * (Math.pow((1 + rateB), period) - 1) / rateB)
+      (userPv * Math.pow((1 + rateB), period)) +
+      (userPmt * (Math.pow((1 + rateB), period) - 1) / rateB)
 
     const SalarioPrevidencia = (ValorPrevidencia * rateA) / (1 - Math.pow((1 + rateA), -(ageLimit - userRetireAge)))
 
     const SalarioPoupanca = (ValorPoupanca * rateB) / (1 - Math.pow((1 + rateB), -(ageLimit - userRetireAge)))
 
-    const ValorAcumulado = parseFloat(userPv) + parseFloat(userPmt) * period
+    const ValorAcumulado = userPv + userPmt * period
 
     console.log(userPmt, userPmt, period, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado)
 
