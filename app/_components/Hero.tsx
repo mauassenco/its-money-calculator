@@ -69,7 +69,7 @@ const Hero = () => {
                   </Button>
 
                 </SheetTrigger>
-                <SheetContent className="w-full bg-[#F2FFFF] p-0 sm:w-[400px]">
+                <SheetContent className="w-full bg-[#F2FFFF] p-0 sm:w-[400px] overflow-x-hidden ">
                   <SheetHeader className="">
                     <SimulatorHeader />
                   </SheetHeader>

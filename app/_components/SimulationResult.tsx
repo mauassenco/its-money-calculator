@@ -22,7 +22,7 @@ import WhatssappIcon from "./icons/WhatssappIcon"
 import PlusIconCustom from "./icons/PlusIconCustom"
 import HandOnFile from "./icons/HandOnFile"
 import { useContext, useState } from "react"
-import { checkNumberType, formatMoney, formatNumberWithSeparators, extractNumbers, formatToReaisB, formatToReais } from "../_lib/functions"
+import { checkNumberType, formatMoney, formatNumberWithSeparators, extractNumbers, formatToReaisB, formatToReais, formatToNumber } from "../_lib/functions"
 import { AcfFieldsContext } from "../context/AcfFields"
 import parse from 'html-react-parser'
 
@@ -57,7 +57,7 @@ export function SimulationResult() {
 
   const handleChange = (event: any) => {
     const { name, value } = event.target;
-    setFormDataNew({ ...formDataNew, [name]: value });
+    setFormDataNew({ ...formDataNew, [name]: Number(value) });
   }
 
   const [tabsData, setTabsData] = useState([]);
@@ -68,8 +68,8 @@ export function SimulationResult() {
     const userAge = Number(sessionStorage.getItem('Idade'));
 
     const userRetireAge = Number(simulationDataItemsNew.retire_age)
-    const userPv = Number(simulationDataItemsNew.monthly_investment)
-    const userPmt = Number(simulationDataItemsNew.initial_investment)
+    const userPv = formatToNumber(String(simulationDataItemsNew.monthly_investment));
+    const userPmt = formatToNumber(String(simulationDataItemsNew.initial_investment));
 
     const rateA = 0.00678
     const rateB = 0.0033
@@ -77,16 +77,20 @@ export function SimulationResult() {
     const ageLimit = 100
 
     const ValorPrevidencia =
-      (userPv * Math.pow((1 + rateA), period)) +
-      (userPmt * (Math.pow((1 + rateA), period) - 1) / rateA)
+      (parseFloat(userPv) * Math.pow((1 + rateA), period)) +
+      (parseFloat(userPmt) * (Math.pow((1 + rateA), period) - 1) / rateA)
+
     const ValorPoupanca =
-      (userPv * Math.pow((1 + rateB), period)) +
-      (userPmt * (Math.pow((1 + rateB), period) - 1) / rateB)
+      (parseFloat(userPv) * Math.pow((1 + rateB), period)) +
+      (parseFloat(userPmt) * (Math.pow((1 + rateB), period) - 1) / rateB)
 
     const SalarioPrevidencia = (ValorPrevidencia * rateA) / (1 - Math.pow((1 + rateA), -(ageLimit - userRetireAge)))
+
     const SalarioPoupanca = (ValorPoupanca * rateB) / (1 - Math.pow((1 + rateB), -(ageLimit - userRetireAge)))
 
-    const ValorAcumulado = userPv + (userPmt * period)
+    const ValorAcumulado = parseFloat(userPv) + parseFloat(userPmt) * period
+
+    console.log(userPmt, userPmt, period, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado)
 
     const simulationData = { ...formDataNew, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado }
     let storedData = JSON.parse(window.sessionStorage.getItem('Simulações') || '[]');
@@ -112,7 +116,7 @@ export function SimulationResult() {
   };
 
   return (
-    <Tabs defaultValue="salary" className="w-full pb-10 ct" id="tabs">
+    <Tabs defaultValue="salary" className="w-full pb-10 ct overflow-x-hidden" id="tabs">
       <div className="ct w-full bg-highlight flex items-center justify-between h-[64px] pl-2 pr-6">
         <div className="ct flex items-center gap-4 text-black font-semibold w-[50%] text-[15px]">
           <ChevronLeft width={24} height={24} />
@@ -345,17 +349,13 @@ export function SimulationResult() {
                   ></path>
                 </g>
               </svg>
-              <input
-                type="text"
-                name="initial_investment"
-                className="grow"
-                placeholder="Investimento (inicial)"
-                onChange={(e) => {
-                  const { value } = e.target;
-                  e.target.value = formatToReais(e);
-                }} />
-
+              <input type="text" name="initial_investment" className="grow" placeholder="Investimento (inicial)" onChange={(e) => {
+                const { value } = e.target;
+                e.target.value = formatToReais(e);
+                handleChange(e)
+              }} />
             </label>
+
             <label className="input flex items-center  rounded gap-2 h-[56px] bg-white bsx-sm-v2 border border-gray-600;">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -385,8 +385,10 @@ export function SimulationResult() {
               <input type="text" name="monthly_investment" className="grow" placeholder="Investimento (mensal)" onChange={(e) => {
                 const { value } = e.target;
                 e.target.value = formatToReais(e);
+                handleChange(e)
               }} />
             </label>
+
             <label className="input flex items-center  rounded gap-2 h-[56px] bg-white bsx-sm-v2 border border-gray-600;">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

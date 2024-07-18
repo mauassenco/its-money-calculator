@@ -7,9 +7,9 @@ export const registerSchema = z.object({
   age: z.string().min(1, { message: "Digite sua idade" }),
   // age: z.number().gte(18, 'Must be 18 or older').lte(100, 'Must be 100 or younger'),
   retire_age: z.string().min(1, { message: "Digite com qual idade deseja se aposentar" }),
-  initial_investment: z.string().min(10, { message: "Digite um valor inicial" }),
+  initial_investment: z.string().min(1, { message: "Digite um valor inicial" }),
   month_investment: z.string().min(1, { message: "Digite o valor mensal de contribuição " }),
-  gender: z.string().min(2, { message: "Selecione um gênero" }).max(10),
+  gender: z.string().min(1, { message: "Selecione um gênero" }).max(10),
   investidor_profile: z.string().min(1, { message: "Selecione um perfil" }).max(255),
 });
 
