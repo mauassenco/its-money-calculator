@@ -48,33 +48,40 @@ type Simulation = {
 };
 
 export function SimulationResult() {
+  // Pega os items de todas as simulaçÕes
   const sessionSimulationsRaw = sessionStorage.getItem('Simulações');
   const sessionSimulations: Simulation[] = JSON.parse(sessionSimulationsRaw as any)
+  const userAge = Number(sessionStorage.getItem('Idade'));
 
+  // Pega outros dados da ultima consulta que nao sejam investimento mensal e inicial e idade de aposentar
   const simulationDataItems = sessionSimulations[sessionSimulations.length - 1].simulationData
 
   const [formDataNew, setFormDataNew] = useState({});
+  const [tabsData, setTabsData] = useState([]);
 
   const handleChange = (event: any) => {
     const { name, value } = event.target;
-    setFormDataNew({ ...formDataNew, [name]: Number(value) });
+    setFormDataNew({ ...formDataNew, [name]: value });
   }
 
-  const [tabsData, setTabsData] = useState([]);
+
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    const simulationDataItemsNew = sessionSimulations[sessionSimulations.length - 1].simulationData
-    const userAge = Number(sessionStorage.getItem('Idade'));
+    // const simulationDataItemsNew = sessionSimulations[sessionSimulations.length - 1].simulationData
+    // const userAge = Number(sessionStorage.getItem('Idade'));
 
-    const userRetireAge = Number(simulationDataItemsNew.retire_age)
-    const userPv = extractRealNumber(String(simulationDataItemsNew.monthly_investment));
-    const userPmt = extractRealNumber(String(simulationDataItemsNew.initial_investment));
+    const userRetireAge = parseFloat(String(simulationDataItems.retire_age))
+
+    const userPv = extractRealNumber(String(simulationDataItems.monthly_investment));
+    const userPmt = extractRealNumber(String(simulationDataItems.initial_investment));
 
     const rateA = 0.00678
     const rateB = 0.0033
     const period = (userRetireAge - userAge) * 12
     const ageLimit = 100
+
+    console.log('PV', userPv, 'Pmt', userPmt, 'Period', period)
 
     const ValorPrevidencia =
       (userPv * Math.pow((1 + rateA), period)) +
@@ -90,7 +97,7 @@ export function SimulationResult() {
 
     const ValorAcumulado = userPv + userPmt * period
 
-    console.log(userPmt, userPmt, period, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado)
+    console.log(userPv, userPmt, period, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado)
 
     const simulationData = { ...formDataNew, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado }
     let storedData = JSON.parse(window.sessionStorage.getItem('Simulações') || '[]');
