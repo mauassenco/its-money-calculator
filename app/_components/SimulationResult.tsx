@@ -64,13 +64,22 @@ export function SimulationResult() {
     setFormDataNew({ ...formDataNew, [name]: value });
   }
 
+  const handleChangeB = (event: any) => {
+    const { name, value } = event.target;
+    setFormDataNew({ ...formDataNew, [name]: value });
+  }
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
 
     const userRetireAge = parseFloat(String(simulationDataItems.retire_age))
 
     const userPv = extractRealNumber(String(simulationDataItems.initial_investment));
-    const userPmt = extractRealNumber(String(simulationDataItems.monthly_investment));
+    let userPmt = extractRealNumber(String(simulationDataItems.monthly_investment));
+
+    if (isNaN(userPmt)) {
+      userPmt = userPv / 10
+    }
 
     // console.log(simulationDataItems.initial_investment, simulationDataItems.monthly_investment)
 
