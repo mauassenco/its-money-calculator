@@ -64,17 +64,15 @@ export function SimulationResult() {
     setFormDataNew({ ...formDataNew, [name]: value });
   }
 
-
-
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    // const simulationDataItemsNew = sessionSimulations[sessionSimulations.length - 1].simulationData
-    // const userAge = Number(sessionStorage.getItem('Idade'));
 
     const userRetireAge = parseFloat(String(simulationDataItems.retire_age))
 
-    const userPv = extractRealNumber(String(simulationDataItems.monthly_investment));
-    const userPmt = extractRealNumber(String(simulationDataItems.initial_investment));
+    const userPv = extractRealNumber(String(simulationDataItems.initial_investment));
+    const userPmt = extractRealNumber(String(simulationDataItems.monthly_investment));
+
+    // console.log(simulationDataItems.initial_investment, simulationDataItems.monthly_investment)
 
     const rateA = 0.00678
     const rateB = 0.0033
@@ -97,7 +95,7 @@ export function SimulationResult() {
 
     const ValorAcumulado = userPv + userPmt * period
 
-    console.log(userPv, userPmt, period, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado)
+    // console.log(userPv, userPmt, period, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado)
 
     const simulationData = { ...formDataNew, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado }
     let storedData = JSON.parse(window.sessionStorage.getItem('Simulações') || '[]');
@@ -330,6 +328,7 @@ export function SimulationResult() {
             <h3 className="font-bold text-[32px] leading-[35px] font-Big_Shoulders_Text  text-black uppercase">Nova Simulação</h3>
           </div>
           <form onSubmit={handleSubmit} className="space-y-2" method="dialog">
+
             <label className="input flex items-center  rounded gap-2 h-[56px] bg-white bsx-sm-v2 border border-gray-600;">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -356,11 +355,12 @@ export function SimulationResult() {
                   ></path>
                 </g>
               </svg>
-              <input type="text" name="initial_investment" className="grow" placeholder="Investimento (inicial)" onChange={(e) => {
-                const { value } = e.target;
-                e.target.value = formatToReais(e);
-                handleChange(e)
-              }} />
+              <input type="text" name="initial_investment" className="grow" placeholder="Investimento (inicial)"
+                onChange={(e) => {
+                  const { value } = e.target;
+                  e.target.value = formatToReais(e);
+                  handleChange(e)
+                }} />
             </label>
 
             <label className="input flex items-center  rounded gap-2 h-[56px] bg-white bsx-sm-v2 border border-gray-600;">
@@ -389,11 +389,12 @@ export function SimulationResult() {
                   ></path>
                 </g>
               </svg>
-              <input type="text" name="monthly_investment" className="grow" placeholder="Investimento (mensal)" onChange={(e) => {
-                const { value } = e.target;
-                e.target.value = formatToReais(e);
-                handleChange(e)
-              }} />
+              <input type="text" name="monthly_investment" className="grow" placeholder="Investimento (mensal)"
+                onChange={(e) => {
+                  const { value } = e.target;
+                  e.target.value = formatToReais(e);
+                  handleChange(e)
+                }} />
             </label>
 
             <label className="input flex items-center  rounded gap-2 h-[56px] bg-white bsx-sm-v2 border border-gray-600;">
