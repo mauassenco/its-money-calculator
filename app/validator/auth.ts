@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const registerSchema = z.object({
   name: z.string().min(3, { message: "Digite seu nome" }),
-  email: z.string().email({message: "Digite um email válido"}).min(0 , {message: "Digite um email válido"}),
+  email: z.string().email({message: "Digite um email válido"}).min(3, {message: "Digite um email válido"}),
   phone: z.string().min(14, { message: 'Telefone com DDD deve ter 11 números' }),
   age: z.string().min(1, { message: "Digite sua idade" }),
   // age: z.number().gte(18, 'Must be 18 or older').lte(100, 'Must be 100 or younger'),
