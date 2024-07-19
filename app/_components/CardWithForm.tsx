@@ -162,7 +162,7 @@ export function CardWithForm() {
                 <CardDescription></CardDescription>
               </CardHeader>
 
-              <CardContent>
+              <CardContent >
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)}
                     className={
@@ -536,7 +536,7 @@ export function CardWithForm() {
 
                     </div >
 
-                    <div className="pb-5 flex flex-col items-center absolute bottom-[-50px] left-0 w-full sm:bottom-0">
+                    <div className="pb-5 flex flex-col items-center absolute bottom-[-20px] left-0 w-full sm:bottom-0 ">
                       <Button className={cn(
                         "ct h-[56px] w-full max-w-[326px] bg-highlight text-base font-bold text-black", {
                         'hidden': formStep == (steps.length - 1),
