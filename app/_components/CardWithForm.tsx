@@ -176,7 +176,7 @@ export function CardWithForm() {
 
                       {/* Nome */}
                       <motion.div className={
-                        cn("flex flex-col gap-12 px-1 overflow-auto", {
+                        cn("flex flex-col gap-3 sm:gap-12 px-1 overflow-auto", {
                           // 'hidden': formStep != 0,
                         })}
                         animate={{
@@ -218,7 +218,7 @@ export function CardWithForm() {
 
                       {/* Email e Telefone */}
                       <motion.div className={
-                        cn("absolute top-10 left-0 right-0 px-1 overflow-scroll sm:overflow-hidden pb-10", {
+                        cn("absolute top-5 sm:top-10 left-0 right-0 px-1 overflow-scroll sm:overflow-hidden pb-10", {
                           // 'hidden': formStep != 1,
                         })}
                         animate={{
@@ -227,7 +227,7 @@ export function CardWithForm() {
                         transition={{
                           ease: "easeInOut"
                         }}>
-                        <div className="space-y-6 mb-12 ">
+                        <div className="space-y-6 mb-3 sm:mb-12 ">
                           <h2 className="text-2xl font-bold">
                             {parse(steps[1].titulo_da_etapa)}
                             {' '} {clientName}
@@ -284,7 +284,7 @@ export function CardWithForm() {
 
                       {/* Idade e Gênero */}
                       <motion.div className={
-                        cn("absolute top-10 left-0 right-0 px-1 overflow-x-hidden overflow-y-scroll sm:overflow-hidden", {
+                        cn("absolute top-5 sm:top-10 left-0 right-0 px-1 overflow-x-hidden overflow-y-scroll sm:overflow-hidden", {
                           // 'hidden': formStep != 2,
                         })}
                         animate={{
@@ -366,7 +366,7 @@ export function CardWithForm() {
 
                       {/* Idade de Aposentadoria */}
                       <motion.div className={
-                        cn("absolute top-10 left-0 right-0 px-1", {
+                        cn("absolute top-5 sm:top-10 left-0 right-0 px-1", {
                           'hidden': formStep != 3,
                         })}
                         animate={{
@@ -412,7 +412,7 @@ export function CardWithForm() {
 
                       {/* Investimento Inicial e Investimento Mensal */}
                       <motion.div className={
-                        cn("absolute top-10 left-0 right-0 px-1 overflow-scroll sm:overflow-hidden h-screen", {
+                        cn("absolute top-5 sm:top-10 left-0 right-0 px-1 overflow-scroll sm:overflow-hidden h-screen", {
                           'hidden': formStep != 4,
                         })}
                         animate={{
@@ -482,7 +482,7 @@ export function CardWithForm() {
 
                       {/* Perfil do Investidor*/}
                       <motion.div className={
-                        cn("absolute top-10 left-0 right-0 px-1 overflow-scroll h-screen sm:overflow-hidden ", {
+                        cn("absolute top-5 sm:top-10 left-0 right-0 px-1 overflow-scroll h-screen sm:overflow-hidden ", {
                           'hidden': formStep != 5,
                         })}
                         animate={{
