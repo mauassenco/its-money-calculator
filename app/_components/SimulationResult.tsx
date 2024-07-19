@@ -259,7 +259,7 @@ export function SimulationResult() {
             </div>
           </div>
           <div className="flex justify-center mt-8">
-            <Button className="ct font-bold text-sm leading-[18px] text-black text-center bg-white bxs-sm px-8">Quero uma avaliação personalizada</Button>
+            <Button onClick={handleSendWhatssapp} className="ct font-bold text-sm leading-[18px] text-black text-center bg-white bxs-sm px-8" >Quero uma avaliação personalizada</Button>
           </div>
         </div>
       </Card>

@@ -167,7 +167,7 @@ export function CardWithForm() {
                   <form onSubmit={form.handleSubmit(onSubmit)}
                     className={
                       cn(" flex flex-col ch gap-12 px-1 overflow-hidden dobs", {
-                        // 'overflow-y-hidden': formStep === 0 || formStep === 1 || formStep === 2 || formStep === 3,
+                        'overflow-y-scroll': formStep === 5,
                       })
                     }>
                     <div className="pt-10 relative">
