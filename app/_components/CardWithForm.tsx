@@ -168,6 +168,7 @@ export function CardWithForm() {
                     className={
                       cn(" flex flex-col ch gap-12 px-1 overflow-hidden dobs", {
                         'overflow-y-scroll': formStep === 5,
+                        'h-full': formStep === 2,
                       })
                     }>
                     <div className="pt-10 relative">
@@ -534,7 +535,7 @@ export function CardWithForm() {
 
                     </div >
 
-                    <div className="pb-5 flex flex-col items-center absolute bottom-0 left-0 w-full">
+                    <div className="pb-5 flex flex-col items-center absolute bottom-[-10px] left-0 w-full sm:bottom-0">
                       <Button className={cn(
                         "ct h-[56px] w-full max-w-[326px] bg-highlight text-base font-bold text-black", {
                         'hidden': formStep == (steps.length - 1),
