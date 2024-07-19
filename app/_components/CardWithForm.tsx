@@ -586,7 +586,7 @@ export function CardWithForm() {
                       </Button>
 
                       <Button className={cn(
-                        "ct h-[56px] w-full max-w-[326px] bg-highlight text-base font-bold text-black ", {
+                        "ct h-[56px] w-full max-w-[300px] sm:max-w-[326px]  bg-highlight text-base font-bold text-black ", {
                         'hidden': formStep !== (steps.length - 1),
                       })} type="submit"
                       >
