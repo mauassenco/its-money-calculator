@@ -21,7 +21,7 @@ import CallAttendantIcon from "./icons/CallAttendantIcon"
 import WhatssappIcon from "./icons/WhatssappIcon"
 import PlusIconCustom from "./icons/PlusIconCustom"
 import HandOnFile from "./icons/HandOnFile"
-import { useContext, useState } from "react"
+import { useContext, useRef, useState } from "react"
 import { checkNumberType, formatMoney, formatNumberWithSeparators, extractNumbers, formatToReaisB, formatToReais, extractRealNumber } from "../_lib/functions"
 import { AcfFieldsContext } from "../context/AcfFields"
 import parse from 'html-react-parser'
@@ -62,11 +62,7 @@ export function SimulationResult() {
   const handleChange = (event: any) => {
     const { name, value } = event.target;
     setFormDataNew({ ...formDataNew, [name]: value });
-  }
 
-  const handleChangeB = (event: any) => {
-    const { name, value } = event.target;
-    setFormDataNew({ ...formDataNew, [name]: value });
   }
 
   const handleSubmit = (e: any) => {
@@ -80,8 +76,6 @@ export function SimulationResult() {
     if (isNaN(userPmt)) {
       userPmt = userPv / 10
     }
-
-    // console.log(simulationDataItems.initial_investment, simulationDataItems.monthly_investment)
 
     const rateA = 0.00678
     const rateB = 0.0033
@@ -114,6 +108,10 @@ export function SimulationResult() {
     document.getElementById('close-x')?.click()
 
     setTabsData(storedData)
+
+    topSimulationResultRef.current?.scrollIntoView({
+      behavior: 'smooth'
+    })
   };
 
   const AcfData = useContext(AcfFieldsContext)
@@ -126,9 +124,11 @@ export function SimulationResult() {
     const targetWindow = window.open(link, '_blank');
   };
 
+  const topSimulationResultRef = useRef<HTMLDivElement | null>(null)
+
   return (
-    <Tabs defaultValue="salary" className="w-full pb-10 ct overflow-x-hidden" id="tabs">
-      <div className="ct w-full bg-highlight flex items-center justify-between h-[64px] pl-2 pr-6">
+    <Tabs defaultValue="salary" className="w-full pb-10 ct overflow-x-hidden" id="tabs" >
+      <div id="modal-content" className="ct w-full bg-highlight flex items-center justify-between h-[64px] pl-2 pr-6" ref={topSimulationResultRef}>
         <div className="ct flex items-center gap-4 text-black font-semibold w-[50%] text-[15px]">
           <ChevronLeft width={24} height={24} />
           <h3>Resultado</h3>
@@ -433,6 +433,7 @@ export function SimulationResult() {
             </label>
 
             <div className="pt-8" >
+
               <Button className="ct relative w-full h-[56px] bg-highlight rounded bxs-sm" type="submit" >
                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
                   <mask id="mask0_9533_90" maskUnits="userSpaceOnUse" x="0" y="0" width="25" height="24">
@@ -445,6 +446,7 @@ export function SimulationResult() {
                 <p className="font-bold text-[16px] leading-5 text-black ml-[6px]">Nova simulação</p>
 
               </Button>
+
             </div>
 
           </form>

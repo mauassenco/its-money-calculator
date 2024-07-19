@@ -236,3 +236,9 @@
 .ch {
   height: calc(100vh - 250px);
 }
+
+@media (max-height: 645px) {
+  .dobs {
+overflow-y: scroll;
+  }
+}

@@ -99,8 +99,6 @@ export function CardWithForm() {
       (userPv * Math.pow((1 + rateA), period)) +
       (userPmt * (Math.pow((1 + rateA), period) - 1) / rateA)
 
-
-
     const ValorPoupanca =
       (userPv * Math.pow((1 + rateB), period)) +
       (userPmt * (Math.pow((1 + rateB), period) - 1) / rateB)
@@ -158,7 +156,7 @@ export function CardWithForm() {
 
             </div>
 
-            <Card className=" shadow-cst3 mb-10 flex w-full flex-col " >
+            <Card className="shadow-cst3 mb-10 flex w-full flex-col " >
               <CardHeader className="p-0 m-0 h-0">
                 <CardTitle></CardTitle>
                 <CardDescription></CardDescription>
@@ -168,15 +166,15 @@ export function CardWithForm() {
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)}
                     className={
-                      cn(" flex flex-col ch gap-12 px-1 overflow-hidden h-screen", {
+                      cn(" flex flex-col ch gap-12 px-1 overflow-hidden dobs", {
                         // 'overflow-y-hidden': formStep === 0 || formStep === 1 || formStep === 2 || formStep === 3,
                       })
                     }>
-                    <div className="pt-10 relative ">
+                    <div className="pt-10 relative">
 
                       {/* Nome */}
                       <motion.div className={
-                        cn(" flex flex-col gap-12 px-1 overflow-hidden", {
+                        cn("flex flex-col gap-12 px-1 overflow-auto", {
                           // 'hidden': formStep != 0,
                         })}
                         animate={{
@@ -218,7 +216,7 @@ export function CardWithForm() {
 
                       {/* Email e Telefone */}
                       <motion.div className={
-                        cn("absolute top-10 left-0 right-0 px-1 overflow-scroll sm:overflow-hidden h-screen", {
+                        cn("absolute top-10 left-0 right-0 px-1 overflow-scroll sm:overflow-hidden pb-10", {
                           // 'hidden': formStep != 1,
                         })}
                         animate={{
@@ -284,7 +282,7 @@ export function CardWithForm() {
 
                       {/* Idade e Gênero */}
                       <motion.div className={
-                        cn("absolute top-10 left-0 right-0 px-1 overflow-x-hidden overflow-y-scroll sm:overflow-hidden h-screen", {
+                        cn("absolute top-10 left-0 right-0 px-1 overflow-x-hidden overflow-y-scroll sm:overflow-hidden", {
                           // 'hidden': formStep != 2,
                         })}
                         animate={{
