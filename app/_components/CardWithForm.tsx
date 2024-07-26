@@ -12,7 +12,7 @@ import {
 } from "./ui/card";
 import { Input } from "./ui/input";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { ArrowRight, Check, CheckCircle2Icon, DollarSignIcon, LogOut } from "lucide-react";
+import { ArrowRight, Check, CheckCircle2Icon, ChevronLeft, DollarSignIcon, LogOut } from "lucide-react";
 import { useContext, useState } from "react";
 import parse from 'html-react-parser';
 import { cn } from "../_lib/utils";
@@ -66,7 +66,6 @@ export function CardWithForm() {
 
   const handleChange = (event: any) => {
     const { name, value } = event.target;
-    // setFormData({ ...formData, [name]: value });
 
     if (name === '') {
       setFormData({ ...formData, ["investidor_profile"]: value });
@@ -86,27 +85,44 @@ export function CardWithForm() {
 
     const userAge = Number(formData.age)
     const userRetireAge = Number(formData.retire_age);
-    const userPv = extractRealNumber(String(formData.initial_investment));
-    const userPmt = extractRealNumber(String(formData.month_investment));
+    const userInitialInvestiment = extractRealNumber(String(formData.initial_investment));
+    const userMonthlyInvestiment = extractRealNumber(String(formData.month_investment));
 
-    const rateA = 0.00678
-    const rateB = 0.0033
-    const period = (userRetireAge - userAge) * 12
+    // const taxaPrevidencia = 0.00678
+    const taxaPoupanca = 0.0033
+    const periodo = (userRetireAge - userAge) * 12
     const ageLimit = 100
 
+    const CDI = 0.1167
+    let taxaPrevidencia = 0
+
+    if (formData.investidor_profile === '0') {
+      taxaPrevidencia = CDI / 12;
+    } else if (formData.investidor_profile === '1') {
+      taxaPrevidencia = (((1 + CDI) * 1.02) - 1) / 12;
+    } else {
+      taxaPrevidencia = (((1 + CDI) * 1.04) - 1) / 12;
+    }
+
+    // const lop = (m, i, p) => {
+    //   return (m * (Math.pow((1 + i), p) - 1) / i)
+    // }
 
     const ValorPrevidencia =
-      (userPv * Math.pow((1 + rateA), period)) +
-      (userPmt * (Math.pow((1 + rateA), period) - 1) / rateA)
+      (userInitialInvestiment * Math.pow((1 + taxaPrevidencia), periodo)) +
+      (userMonthlyInvestiment * (Math.pow((1 + taxaPrevidencia), periodo) - 1) / taxaPrevidencia)
+
+    console.log(ValorPrevidencia, taxaPrevidencia, formData.investidor_profile)
 
     const ValorPoupanca =
-      (userPv * Math.pow((1 + rateB), period)) +
-      (userPmt * (Math.pow((1 + rateB), period) - 1) / rateB)
+      (userInitialInvestiment * Math.pow((1 + taxaPoupanca), periodo)) +
+      (userMonthlyInvestiment * (Math.pow((1 + taxaPoupanca), periodo) - 1) / taxaPoupanca)
 
-    const SalarioPrevidencia = (ValorPrevidencia * rateA) / (1 - Math.pow((1 + rateA), -(ageLimit - userRetireAge)))
-    const SalarioPoupanca = (ValorPoupanca * rateB) / (1 - Math.pow((1 + rateB), -(ageLimit - userRetireAge)))
+    const SalarioPrevidencia = (ValorPrevidencia * taxaPrevidencia) / (1 - Math.pow((1 + taxaPrevidencia), -(ageLimit - userRetireAge)))
 
-    const ValorAcumulado = userPv + userPmt * period
+    const SalarioPoupanca = (ValorPoupanca * taxaPoupanca) / (1 - Math.pow((1 + taxaPoupanca), -(ageLimit - userRetireAge)))
+
+    const ValorAcumulado = userInitialInvestiment + userMonthlyInvestiment * periodo
 
     const simulationData = { ...formData, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado }
 
@@ -115,6 +131,7 @@ export function CardWithForm() {
     window.sessionStorage.setItem('Simulações', JSON.stringify(storedData));
     window.sessionStorage.setItem('Idade', JSON.stringify(userAge));
   }
+
 
   return (
     <>
@@ -127,7 +144,7 @@ export function CardWithForm() {
               <div className="">
                 <p className="text[17px] leading-7 text-[#000]">Deseja sair do simulador?</p>
               </div>
-              <div className="bottom-4 right-4 flex items-center gap-1 rounded border border-highlight px-4 py-[9px] shadow-cst2 transition-opacity ct  focus:outline-none disabled:pointer-events-none data-[state=open]:bg-secondary  hover:bg-highlight hover:shadow-lg cursor-pointer" >
+              <div className="bottom-4 right-4 flex items-center gap-1 rounded border border-highlight px-4 py-[9px] shadow-cst2 transition-opacity ct  focus:outline-none disabled:pointer-events-none data-[state=open]:bg-secondary  hover:bg-highlight hover:shadow-lg cursor-pointer" id="close-simulation">
                 <span className="text-sm font-bold text-[#000]  ">Sair</span>
                 <LogOut className="z-10 h-4 w-4 tex" />
               </div>
@@ -515,7 +532,7 @@ export function CardWithForm() {
                                     {steps[5].questoes_da_etapa[0].questao.opcoes_de_resposta.map((item: any, index: number) => (
                                       <FormItem className="flex items-center radio-item gap-4 rounded-sm border bg-white px-4 py-2" key={index}>
                                         <FormControl>
-                                          <RadioGroupItem value={item.opcao_de_resposta_multipla} />
+                                          <RadioGroupItem value={String(index)} />
                                         </FormControl>
                                         <FormLabel className="text-[15px]">
                                           {item.opcao_de_resposta_multipla}
@@ -535,7 +552,24 @@ export function CardWithForm() {
 
                     </div >
 
-                    <div className="pb-5 flex flex-col items-center absolute bottom-[-20px] left-0 w-full sm:bottom-0 ">
+                    <div
+                      className={cn(
+                        "pb-5 flex items-center absolute bottom-[-20px] left-4 right-4  sm:bottom-0 gap-3", {
+                        'flex-col': formStep == 0,
+                      })}
+                    >
+
+                      <Button className={cn(
+                        "ct h-[56px] w-[20%] max-w-[326px] bg-white text-black border border-black", {
+                        'hidden': formStep == 0,
+                        'w-0': formStep == 0,
+                      })}
+                        type="button"
+                        onClick={() => { setFormStep(formStep - 1) }}
+                      >
+                        <ChevronLeft width='fill' className="ml-1.5" />
+                      </Button>
+
                       <Button className={cn(
                         "ct h-[56px] w-full max-w-[326px] bg-highlight text-base font-bold text-black", {
                         'hidden': formStep == (steps.length - 1),
@@ -585,9 +619,10 @@ export function CardWithForm() {
                       </Button>
 
                       <Button className={cn(
-                        "ct h-[56px] w-full max-w-[300px] sm:max-w-[326px]  bg-highlight text-base font-bold text-black ", {
+                        "ct h-[56px] w-full max-w-[300px] sm:max-w-[326px]  bg-highlight text-base font-bold text-black", {
                         'hidden': formStep !== (steps.length - 1),
                       })} type="submit"
+                        disabled={formStep !== (steps.length - 1)}
                       >
                         Entrar
                         <ArrowRight width={24} height={24} className="ml-1.5" />
@@ -600,6 +635,7 @@ export function CardWithForm() {
           </>
         )
       }
+
     </>
 
 

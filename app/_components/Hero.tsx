@@ -19,7 +19,7 @@ import {
 import SimulatorHeader from "./SimulatorHeader";
 import CardWithForm from "./CardWithForm";
 import parse from 'html-react-parser';
-import { AcfFieldsContext, useAcfFieldsContext } from "../context/AcfFields";
+import { AcfFieldsContext } from "../context/AcfFields";
 import { useContext } from "react";
 
 
@@ -40,6 +40,7 @@ const Hero = () => {
               className="geeks h-[320px] h-auto w-full bg-contain object-contain"
               sizes="100%"
               quality={100}
+              id='target-hero-image'
             />
             <div className="geeks absolute bottom-0 h-[31vh]"></div>
           </div>

@@ -21,10 +21,13 @@ import CallAttendantIcon from "./icons/CallAttendantIcon"
 import WhatssappIcon from "./icons/WhatssappIcon"
 import PlusIconCustom from "./icons/PlusIconCustom"
 import HandOnFile from "./icons/HandOnFile"
-import { useContext, useRef, useState } from "react"
-import { checkNumberType, formatMoney, formatNumberWithSeparators, extractNumbers, formatToReaisB, formatToReais, extractRealNumber } from "../_lib/functions"
+import { createContext, useContext, useRef, useState } from "react"
+import { checkNumberType, formatMoney, formatNumberWithSeparators, extractNumbers, formatToReais, extractRealNumber } from "../_lib/functions"
 import { AcfFieldsContext } from "../context/AcfFields"
 import parse from 'html-react-parser'
+import React from "react"
+import { boolean } from "zod"
+import { SheetClose } from "./ui/sheet"
 
 
 type Simulation = {
@@ -47,13 +50,13 @@ type Simulation = {
   };
 };
 
+const MyContext = createContext({ isSubmitted: boolean });
+
 export function SimulationResult() {
-  // Pega os items de todas as simulaçÕes
   const sessionSimulationsRaw = sessionStorage.getItem('Simulações');
   const sessionSimulations: Simulation[] = JSON.parse(sessionSimulationsRaw as any)
   const userAge = Number(sessionStorage.getItem('Idade'));
 
-  // Pega outros dados da ultima consulta que nao sejam investimento mensal e inicial e idade de aposentar
   const simulationDataItems = sessionSimulations[sessionSimulations.length - 1].simulationData
 
   const [formDataNew, setFormDataNew] = useState({});
@@ -63,41 +66,49 @@ export function SimulationResult() {
     const { name, value } = event.target;
     setFormDataNew({ ...formDataNew, [name]: value });
 
+    if (name === "monthly_investment") {
+      sessionStorage.setItem("First_MI", value);
+    }
   }
+
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
 
-    const userRetireAge = parseFloat(String(simulationDataItems.retire_age))
+    let userRetireAge = parseFloat(String(simulationDataItems.retire_age))
 
-    const userPv = extractRealNumber(String(simulationDataItems.initial_investment));
-    let userPmt = extractRealNumber(String(simulationDataItems.monthly_investment));
+    let userInitialInvestiment = extractRealNumber(String(simulationDataItems.initial_investment));
 
-    if (isNaN(userPmt)) {
-      userPmt = userPv / 10
+    let userMonthlyInvestiment = extractRealNumber(String(simulationDataItems.monthly_investment));
+
+    console.log(userMonthlyInvestiment)
+
+    if (isNaN(userMonthlyInvestiment)) {
+      let finvm = sessionStorage.getItem("First_MI")
+      userMonthlyInvestiment = extractRealNumber(String(finvm));
     }
 
-    const rateA = 0.00678
-    const rateB = 0.0033
-    const period = (userRetireAge - userAge) * 12
+    const taxaPrevidencia = 0.00678
+    const taxaPoupanca = 0.0033
+    const periodo = (userRetireAge - userAge) * 12
     const ageLimit = 100
 
-    const ValorPrevidencia =
-      (userPv * Math.pow((1 + rateA), period)) +
-      (userPmt * (Math.pow((1 + rateA), period) - 1) / rateA)
+    let ValorPrevidencia =
+      (userInitialInvestiment * Math.pow((1 + taxaPrevidencia), periodo)) +
+      (userMonthlyInvestiment * (Math.pow((1 + taxaPrevidencia), periodo) - 1) / taxaPrevidencia)
 
-    const ValorPoupanca =
-      (userPv * Math.pow((1 + rateB), period)) +
-      (userPmt * (Math.pow((1 + rateB), period) - 1) / rateB)
+    let ValorPoupanca =
+      (userInitialInvestiment * Math.pow((1 + taxaPoupanca), periodo)) +
+      (userMonthlyInvestiment * (Math.pow((1 + taxaPoupanca), periodo) - 1) / taxaPoupanca)
 
-    const SalarioPrevidencia = (ValorPrevidencia * rateA) / (1 - Math.pow((1 + rateA), -(ageLimit - userRetireAge)))
+    let SalarioPrevidencia = (ValorPrevidencia * taxaPrevidencia) / (1 - Math.pow((1 + taxaPrevidencia), -(ageLimit - userRetireAge)))
 
-    const SalarioPoupanca = (ValorPoupanca * rateB) / (1 - Math.pow((1 + rateB), -(ageLimit - userRetireAge)))
+    let SalarioPoupanca = (ValorPoupanca * taxaPoupanca) / (1 - Math.pow((1 + taxaPoupanca), -(ageLimit - userRetireAge)))
 
-    const ValorAcumulado = userPv + userPmt * period
+    let ValorAcumulado = userInitialInvestiment + userMonthlyInvestiment * periodo
 
 
-    const simulationData = { ...formDataNew, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado }
+    let simulationData = { ...formDataNew, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado }
     let storedData = JSON.parse(window.sessionStorage.getItem('Simulações') || '[]');
 
     storedData.push({ simulationData });
@@ -116,7 +127,12 @@ export function SimulationResult() {
 
   const AcfData = useContext(AcfFieldsContext)
 
-  const encodeMessage = encodeURIComponent(`Valor Acumulado: ${formatMoney(simulationDataItems.ValorAcumulado)}, Valor Poupança: ${formatMoney(simulationDataItems.ValorPoupanca)}, Valor Previdência: ${formatMoney(simulationDataItems.ValorPrevidencia)}, Salário Previdencia: ${formatMoney(simulationDataItems.SalarioPrevidencia)}, Salário Poupança: ${formatMoney(simulationDataItems.SalarioPoupanca)}`)
+  const encodeMessage = encodeURIComponent(`
+    Valor Acumulado: ${formatMoney(simulationDataItems.ValorAcumulado)}
+    Valor Poupança: ${formatMoney(simulationDataItems.ValorPoupanca)}
+    Valor Previdência: ${formatMoney(simulationDataItems.ValorPrevidencia)}
+    Salário Previdencia: ${formatMoney(simulationDataItems.SalarioPrevidencia)}
+    Salário Poupança: ${formatMoney(simulationDataItems.SalarioPoupanca)}`)
 
   const link = `https://wa.me/+55${extractNumbers(String(simulationDataItems.phone))}?text=${encodeMessage}`
 
@@ -126,11 +142,15 @@ export function SimulationResult() {
 
   const topSimulationResultRef = useRef<HTMLDivElement | null>(null)
 
+
+
   return (
     <Tabs defaultValue="salary" className="w-full pb-10 ct overflow-x-hidden" id="tabs" >
       <div id="modal-content" className="ct w-full bg-highlight flex items-center justify-between h-[64px] pl-2 pr-6" ref={topSimulationResultRef}>
-        <div className="ct flex items-center gap-4 text-black font-semibold w-[50%] text-[15px]">
-          <ChevronLeft width={24} height={24} />
+        <div className="cursor-pointer ct flex items-center gap-4 text-black font-semibold w-[50%] text-[15px]">
+          <SheetClose >
+            <ChevronLeft width={24} height={24} />
+          </SheetClose >
           <h3>Resultado</h3>
         </div>
         <TabsList className="grid grid-cols-[auto_auto] bg-[#0FF] p-1 ">
