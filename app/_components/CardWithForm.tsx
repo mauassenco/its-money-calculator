@@ -101,25 +101,23 @@ export function CardWithForm() {
       taxaPrevidencia = Math.pow((1 + CDI), (1 / 12)) - 1;
     } else if (formData.investidor_profile === '1') {
       taxa = ((1 + CDI) * 1.02) - 1
-      taxaPrevidencia = Math.pow((1 + taxa), (1 / 12));
+      taxaPrevidencia = Math.pow((1 + taxa), (1 / 12)) - 1;
     } else {
       taxa = ((1 + CDI) * 1.04) - 1
-      taxaPrevidencia = Math.pow((1 + taxa), (1 / 12));
+      taxaPrevidencia = Math.pow((1 + taxa), (1 / 12)) - 1;
     }
 
-    // const lop = (m, i, p) => {
-    //   return (m * (Math.pow((1 + i), p) - 1) / i)
-    // }
-
     const ValorPrevidencia =
-      (userInitialInvestiment * Math.pow((1 + taxaPrevidencia), periodo)) +
-      (userMonthlyInvestiment * (Math.pow((1 + taxaPrevidencia), periodo) - 1) / taxaPrevidencia)
+      Math.abs(
+        (userInitialInvestiment * Math.pow((1 + taxaPrevidencia), periodo)) -
+        (userMonthlyInvestiment * (Math.pow((1 + taxaPrevidencia), periodo) - 1) / taxaPrevidencia))
 
     console.log(ValorPrevidencia, taxaPrevidencia, formData.investidor_profile)
 
     const ValorPoupanca =
-      (userInitialInvestiment * Math.pow((1 + taxaPoupanca), periodo)) +
-      (userMonthlyInvestiment * (Math.pow((1 + taxaPoupanca), periodo) - 1) / taxaPoupanca)
+      Math.abs(
+        (userInitialInvestiment * Math.pow((1 + taxaPoupanca), periodo)) -
+        (userMonthlyInvestiment * (Math.pow((1 + taxaPoupanca), periodo) - 1) / taxaPoupanca))
 
     const SalarioPrevidencia = (ValorPrevidencia * taxaPrevidencia) / (1 - Math.pow((1 + taxaPrevidencia), -(ageLimit - userRetireAge)))
 
