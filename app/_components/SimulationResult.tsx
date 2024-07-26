@@ -88,20 +88,37 @@ export function SimulationResult() {
       userMonthlyInvestiment = extractRealNumber(String(finvm));
     }
 
-    const taxaPrevidencia = 0.00678
+    // const taxaPrevidencia = 0.00678
     const taxaPoupanca = 0.0033
     const periodo = (userRetireAge - userAge) * 12
     const ageLimit = 100
+    const timeOfReceive = (100 - userRetireAge) * 12
 
-    let ValorPrevidencia =
-      (userInitialInvestiment * Math.pow((1 + taxaPrevidencia), periodo)) +
-      (userMonthlyInvestiment * (Math.pow((1 + taxaPrevidencia), periodo) - 1) / taxaPrevidencia)
+    const CDI = 0.1167;
+    let taxaPrevidencia = 0;
+    let taxa = 0;
 
-    let ValorPoupanca =
-      (userInitialInvestiment * Math.pow((1 + taxaPoupanca), periodo)) +
-      (userMonthlyInvestiment * (Math.pow((1 + taxaPoupanca), periodo) - 1) / taxaPoupanca)
+    if (simulationDataItems.investidor_profile === '0') {
+      taxaPrevidencia = Math.pow((1 + CDI), (1 / 12)) - 1;
+    } else if (simulationDataItems.investidor_profile === '1') {
+      taxa = ((1 + CDI) * 1.02) - 1
+      taxaPrevidencia = Math.pow((1 + taxa), (1 / 12)) - 1;
+    } else {
+      taxa = ((1 + CDI) * 1.04) - 1
+      taxaPrevidencia = Math.pow((1 + taxa), (1 / 12)) - 1;
+    }
+    const ValorPrevidencia =
+      Math.abs(
+        (userInitialInvestiment * Math.pow((1 + taxaPrevidencia), periodo)) -
+        (userMonthlyInvestiment * (Math.pow((1 + taxaPrevidencia), periodo) - 1) / taxaPrevidencia))
 
-    let SalarioPrevidencia = (ValorPrevidencia * taxaPrevidencia) / (1 - Math.pow((1 + taxaPrevidencia), -(ageLimit - userRetireAge)))
+    const ValorPoupanca =
+      Math.abs(
+        (userInitialInvestiment * Math.pow((1 + taxaPoupanca), periodo)) -
+        (userMonthlyInvestiment * (Math.pow((1 + taxaPoupanca), periodo) - 1) / taxaPoupanca))
+
+    let SalarioPrevidencia = (ValorPrevidencia * Math.pow((1 + taxaPrevidencia), timeOfReceive)) /
+      ((Math.pow((1 + taxaPrevidencia), timeOfReceive) - 1) / taxaPrevidencia)
 
     let SalarioPoupanca = (ValorPoupanca * taxaPoupanca) / (1 - Math.pow((1 + taxaPoupanca), -(ageLimit - userRetireAge)))
 

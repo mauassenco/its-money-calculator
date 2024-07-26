@@ -113,14 +113,10 @@ export function CardWithForm() {
         (userInitialInvestiment * Math.pow((1 + taxaPrevidencia), periodo)) -
         (userMonthlyInvestiment * (Math.pow((1 + taxaPrevidencia), periodo) - 1) / taxaPrevidencia))
 
-    console.log(ValorPrevidencia, taxaPrevidencia, formData.investidor_profile)
-
     const ValorPoupanca =
       Math.abs(
         (userInitialInvestiment * Math.pow((1 + taxaPoupanca), periodo)) -
         (userMonthlyInvestiment * (Math.pow((1 + taxaPoupanca), periodo) - 1) / taxaPoupanca))
-
-    // const SalarioPrevidencia = (ValorPrevidencia * taxaPrevidencia) / (1 - Math.pow((1 + taxaPrevidencia), -(ageLimit - userRetireAge)))
 
     const SalarioPrevidencia = (ValorPrevidencia * Math.pow((1 + taxaPrevidencia), timeOfReceive)) /
       ((Math.pow((1 + taxaPrevidencia), timeOfReceive) - 1) / taxaPrevidencia)
