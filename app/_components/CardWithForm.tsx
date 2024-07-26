@@ -93,15 +93,18 @@ export function CardWithForm() {
     const periodo = (userRetireAge - userAge) * 12
     const ageLimit = 100
 
-    const CDI = 0.1167
-    let taxaPrevidencia = 0
+    const CDI = 0.1167;
+    let taxaPrevidencia = 0;
+    let taxa = 0;
 
     if (formData.investidor_profile === '0') {
-      taxaPrevidencia = CDI / 12;
+      taxaPrevidencia = Math.pow((1 + CDI), (1 / 12)) - 1;
     } else if (formData.investidor_profile === '1') {
-      taxaPrevidencia = (((1 + CDI) * 1.02) - 1) / 12;
+      taxa = ((1 + CDI) * 1.02) - 1
+      taxaPrevidencia = Math.pow((1 + taxa), (1 / 12));
     } else {
-      taxaPrevidencia = (((1 + CDI) * 1.04) - 1) / 12;
+      taxa = ((1 + CDI) * 1.04) - 1
+      taxaPrevidencia = Math.pow((1 + taxa), (1 / 12));
     }
 
     // const lop = (m, i, p) => {
