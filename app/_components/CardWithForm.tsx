@@ -121,7 +121,10 @@ export function CardWithForm() {
     const SalarioPrevidencia = (ValorPrevidencia * Math.pow((1 + taxaPrevidencia), timeOfReceive)) /
       ((Math.pow((1 + taxaPrevidencia), timeOfReceive) - 1) / taxaPrevidencia)
 
-    const SalarioPoupanca = (ValorPoupanca * taxaPoupanca) / (1 - Math.pow((1 + taxaPoupanca), -(ageLimit - userRetireAge)))
+    const SalarioPoupanca = (ValorPoupanca * Math.pow((1 + taxaPoupanca), timeOfReceive)) /
+      ((Math.pow((1 + taxaPoupanca), timeOfReceive) - 1) / taxaPoupanca)
+
+    console.log(SalarioPoupanca)
 
     const ValorAcumulado = userInitialInvestiment + userMonthlyInvestiment * periodo
 

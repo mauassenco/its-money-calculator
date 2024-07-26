@@ -120,7 +120,9 @@ export function SimulationResult() {
     let SalarioPrevidencia = (ValorPrevidencia * Math.pow((1 + taxaPrevidencia), timeOfReceive)) /
       ((Math.pow((1 + taxaPrevidencia), timeOfReceive) - 1) / taxaPrevidencia)
 
-    let SalarioPoupanca = (ValorPoupanca * taxaPoupanca) / (1 - Math.pow((1 + taxaPoupanca), -(ageLimit - userRetireAge)))
+
+    let SalarioPoupanca = (ValorPoupanca * Math.pow((1 + taxaPoupanca), timeOfReceive)) /
+      ((Math.pow((1 + taxaPoupanca), timeOfReceive) - 1) / taxaPoupanca)
 
     let ValorAcumulado = userInitialInvestiment + userMonthlyInvestiment * periodo
 
@@ -216,7 +218,7 @@ export function SimulationResult() {
                 </div>
                 <div>
                   <p className="text-center text-[15px]">{parse(String(AcfData?.tabs[0]?.dados_da_aba?.subcards.texto_card_b))}</p>
-                  <p className="font-bold text-[16px] mt-4 text-center"><span className="mr-[3px]">R$</span>{formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.ValorPoupanca))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.ValorPoupanca))}</span></p>
+                  <p className="font-bold text-[16px] mt-4 text-center"><span className="mr-[3px]">R$</span>{formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.SalarioPoupanca))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.SalarioPoupanca))}</span></p>
                 </div>
               </div>
 
