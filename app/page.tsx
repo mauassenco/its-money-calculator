@@ -51,7 +51,7 @@ export default function Home() {
     <>
       <AcfFieldsContext.Provider value={acfData} >
         <Hero />
-        <AccordionGroup />
+
       </AcfFieldsContext.Provider>
     </>
   );
