@@ -161,149 +161,60 @@ export function SimulationResult() {
 
   const topSimulationResultRef = useRef<HTMLDivElement | null>(null)
 
-
-
   return (
     <Tabs defaultValue="salary" className="w-full pb-10 ct overflow-x-hidden" id="tabs" >
-      <div id="modal-content" className="ct w-full bg-highlight flex items-center justify-between h-[64px] pl-2 pr-6" ref={topSimulationResultRef}>
-        <div className="cursor-pointer ct flex items-center gap-4 text-black font-semibold w-[50%] text-[15px]">
-          <SheetClose >
-            <ChevronLeft width={24} height={24} />
-          </SheetClose >
-          <h3>Resultado</h3>
-        </div>
-        <TabsList className="grid grid-cols-[auto_auto] bg-[#0FF] p-1 ">
-          <TabsTrigger value="salary">Salário</TabsTrigger>
-          <TabsTrigger value="rentability">Rentabilidade</TabsTrigger>
-        </TabsList>
+      <div id="modal-content" className="ct w-full flex items-center justify-between h-[64px] pl-2 pr-6" ref={topSimulationResultRef}>
+        <h2 className=" font-Big_Shoulders_Text text-black px-4 mt-10 text-[32px] font-bold uppercase leading-[40px]">Veja sua simulação:</h2>
       </div>
 
-      <TabsContent value="salary" className="ct border-[1px] border-highlight m-5 px-4 py-8 bxs-sm rounded pt-0 ct">
-        <Card >
-          <CardHeader className="ct gap-8">
-            <CardTitle className="ct flex justify-center items-center gap-6 ">
-              <MoneyBagIcon />
-              <div className="ct flex gap-2">
-                <h3 className="ct text-[32px] leading-9 flex gap-1.5 font-Big_Shoulders_Text font-bold"><span>R$</span>
-                  {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.SalarioPrevidencia))}
-                  <span className="uppercase">{checkNumberType(Number(simulationDataItems.SalarioPrevidencia))}</span></h3>
+      <TabsContent value="salary" className="ct border-[10px] border-highlight m-4 rounded pt-0">
+        <Card className="space-y-4">
+          <CardContent className="ct px-1 bg-highlight space-y-4">
+            <div className="bg-white flex flex-col p-4 rounded">
+              <div className="flex items-center">
+                <MoneyBagIcon />
+                <h3 className="font-bold">Previdência Privada</h3>
               </div>
-            </CardTitle>
-            <CardDescription className="ct text-[17px] text-center leading-7 p-0 m-0">
-              {/* {parse(String(AcfData.tabs[0]?.dados_da_aba?.texto_principal))} */}
-              {parse(String(AcfData?.tabs[0]?.dados_da_aba?.texto_principal))}
-            </CardDescription>
-            <Separator className="ct h-[1px] bg-[#E5E5E7]" />
-          </CardHeader>
-
-          <CardContent className="ct px-1">
-            <div className="ct grid grid-cols-[1fr_24px_1fr] py-8 m-0">
-              <div className="flex items-center flex-col justify-between gap-4">
-                <div className="bg-[#003] rounded-full w-[72px] h-[72px] flex items-center justify-center flex-col">
-                  <h3 className="text-[18px] text-highlight font-bold">INSS</h3>
-                </div>
-                <div>
-                  <p className="text-center text-[15px]">{parse(String(AcfData?.tabs[0]?.dados_da_aba?.subcards.texto_card_a))}</p>
-                  <p className="font-bold text-[16px] mt-4 text-center">1 salário mínimo</p>
-                </div>
+              <div className="flex flex-col">
+                <p>Rendimento mensal: R$ <span className="font-bold">10 mil*</span></p>
+                <p>Total acumulado: R$ <span className="font-bold">10 mil*</span></p>
               </div>
-
-              <div className=" h-[175px] mt-6">
-                <XIcon className="text-highlight" />
-              </div>
-
-              <div className="flex items-center flex-col justify-between gap-4">
-                <div className="bg-[#003] rounded-full w-[72px] h-[72px] flex items-center justify-center flex-col">
-                  <PigSafeIcon />
-                </div>
-                <div>
-                  <p className="text-center text-[15px]">{parse(String(AcfData?.tabs[0]?.dados_da_aba?.subcards.texto_card_b))}</p>
-                  <p className="font-bold text-[16px] mt-4 text-center"><span className="mr-[3px]">R$</span>{formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.SalarioPoupanca))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.SalarioPoupanca))}</span></p>
-                </div>
-              </div>
-
             </div>
-            <Separator className="h-[1px] bg-[#E5E5E7]" />
 
+            <div className="bg-white flex flex-col p-4 space-y-4 rounded">
+              <div className="flex items-center">
+                <MoneyBagIcon />
+                <h3 className="font-bold">Previdência Privada</h3>
+              </div>
+              <div className="flex flex-col">
+                <p>Rendimento mensal: R$ <span className="font-bold">10 mil*</span></p>
+                <p>Total acumulado: R$ <span className="font-bold">10 mil*</span></p>
+              </div>
+            </div>
+
+            <div className="bg-white flex flex-col p-4 space-y-4 rounded">
+              <div className="flex items-center">
+                <MoneyBagIcon />
+                <h3 className="font-bold">Previdência Privada</h3>
+              </div>
+              <div className="flex flex-col">
+                <p>Rendimento mensal: R$ <span className="font-bold">10 mil*</span></p>
+                <p>Total acumulado: R$ <span className="font-bold">10 mil*</span></p>
+              </div>
+            </div>
+
+            <div className=" bg-highlight">
+              <p className="leading-[18px] text-[12px]">{parse(String(AcfData?.tabs[1]?.dados_da_aba?.observacao))}</p>
+            </div>
           </CardContent>
-          <CardFooter className="ct p-0">
-            <p className="leading-[18px] text-[12px] mt-8 text-center">{parse(String(AcfData?.tabs[0]?.dados_da_aba?.observacao))}</p>
-          </CardFooter>
+
+
         </Card>
-      </TabsContent>
+      </TabsContent >
 
-      <TabsContent value="rentability" className="ct border-[1px] border-highlight m-5 px-4 py-8 bxs-sm rounded pt-0">
-        <Card >
-          <CardHeader className="ct gap-8">
-            <CardTitle className="ct flex justify-center items-center gap-6 ">
-              <MoneyBagIcon />
-              <div className="ct flex gap-2">
-                <h3 className="text-[32px] leading-9 flex gap-1.5 font-Big_Shoulders_Text font-bold"><span>R$</span> {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.ValorPrevidencia))}<span className="uppercase">{checkNumberType(Number(simulationDataItems.ValorPrevidencia))}
-                </span></h3>
-              </div>
-            </CardTitle>
-            <CardDescription className="ct text-[17px] text-center leading-7 p-0 m-0">
-              {parse(String(AcfData?.tabs[1]?.dados_da_aba?.texto_principal))}
-            </CardDescription>
 
-          </CardHeader>
 
-          <CardContent className="ct px-1 py-8">
-            <div className="grid grid-cols-[1fr_24px_1fr] pt-8 m-0">
-              <div className="flex items-center flex-col gap-4">
-                <div className="bg-[#003] rounded-full w-[72px] h-[72px] flex items-center justify-center flex-col">
-                  <PigSafeIcon />
-                </div>
-                <div>
-                  <p className="mb-4 font-bold text-[16px] text-center"><span className="mr-[3px]">R$</span>{formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.ValorAcumulado))}
-                    <span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.ValorAcumulado))}</span></p>
-                  <p className="text-center text-[15px]">
-                    {parse(String(AcfData?.tabs[1].dados_da_aba?.subcards.texto_card_a))}</p>
-                </div>
-              </div>
-
-              <div className=" h-[127px] mt-6">
-                <XIcon className="text-highlight" />
-              </div>
-
-              <div className="flex items-center flex-col gap-4">
-                <div className="bg-[#003] rounded-full w-[72px] h-[72px] flex items-center justify-center flex-col">
-                  <HandOnFile />
-                </div>
-                <div>
-                  <p className="mb-4 font-bold text-[16px] text-center"><span className="mr-[3px]">R$</span> {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.ValorPoupanca))}<span className="ml-[3px]">{checkNumberType(Number(simulationDataItems.ValorPoupanca))}</span></p>
-                  <p className="text-center text-[15px] text-nowrap">{parse(String(AcfData?.tabs[1]?.dados_da_aba?.subcards.texto_card_b))}</p>
-                </div>
-              </div>
-
-            </div>
-
-          </CardContent>
-          <Separator className="h-[1px] bg-[#E5E5E7] " />
-
-          <CardFooter className="p-0">
-            <p className="leading-[18px] text-[12px] mt-8 text-center">{parse(String(AcfData?.tabs[1]?.dados_da_aba?.observacao))}</p>
-          </CardFooter>
-        </Card>
-      </TabsContent>
-
-      <Card>
-        <div className="bg-highlight rounded py-8 px-4 m-5">
-          <div className="flex m-0 p-0 gap-6">
-            <div className="w-12 h-12" id="attendant">
-              <CallAttendantIcon />
-            </div>
-            <div className="text-[15px] leading-6">
-              <p><strong>Deseja falar com os especialistas</strong> em Previdência Privada da Blue3 Investimentos para uma assessoria sem compromisso?</p>
-            </div>
-          </div>
-          <div className="flex justify-center mt-8">
-            <Button onClick={handleSendWhatssapp} className="ct font-bold text-sm leading-[18px] text-black text-center bg-white bxs-sm px-8" >Quero uma avaliação personalizada</Button>
-          </div>
-        </div>
-      </Card>
-
-      <Card>
+      <Card >
         <div className="flex gap-2 py-0 px-4">
           <div className="ct rounded flex flex-col items-center border border-highlight w-[50%] bg-white p-4 gap-4 hover:shadow-md cursor-pointer">
             <label htmlFor="send_to_whatsapp" className="ct cursor-pointer flex flex-col items-center gap-4 bg-white border-none hover:bg-white " >
@@ -328,6 +239,22 @@ export function SimulationResult() {
             </label>
 
 
+          </div>
+        </div>
+      </Card >
+
+      <Card>
+        <div className="bg-highlight rounded py-8 px-4 m-5">
+          <div className="flex m-0 p-0 gap-6">
+            <div className="w-12 h-12" id="attendant">
+              <CallAttendantIcon />
+            </div>
+            <div className="text-[15px] leading-6">
+              <p><strong>Deseja falar com os especialistas</strong> em Previdência Privada da Blue3 Investimentos para uma assessoria sem compromisso?</p>
+            </div>
+          </div>
+          <div className="flex justify-center mt-8">
+            <Button onClick={handleSendWhatssapp} className="ct font-bold text-sm leading-[18px] text-black text-center bg-white bxs-sm px-8" >Quero uma avaliação personalizada</Button>
           </div>
         </div>
       </Card>
