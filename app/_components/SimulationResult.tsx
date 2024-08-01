@@ -167,9 +167,9 @@ export function SimulationResult() {
         <h2 className=" font-Big_Shoulders_Text text-black px-4 mt-10 text-[32px] font-bold uppercase leading-[40px]">Veja sua simulação:</h2>
       </div>
 
-      <TabsContent value="salary" className="ct border-[10px] border-highlight m-4 rounded pt-0">
-        <Card className="space-y-4">
-          <CardContent className="ct px-1 bg-highlight space-y-4">
+      <TabsContent value="salary" className="ct border-[10px] border-highlight m-4 rounded">
+        <Card >
+          <CardContent className="ct p-0 bg-highlight space-y-3">
             <div className="bg-white flex flex-col p-4 rounded">
               <div className="flex items-center">
                 <MoneyBagIcon />
@@ -184,22 +184,21 @@ export function SimulationResult() {
             <div className="bg-white flex flex-col p-4 space-y-4 rounded">
               <div className="flex items-center">
                 <MoneyBagIcon />
-                <h3 className="font-bold">Previdência Privada</h3>
+                <h3 className="font-bold">INSS</h3>
               </div>
               <div className="flex flex-col">
-                <p>Rendimento mensal: R$ <span className="font-bold">10 mil*</span></p>
-                <p>Total acumulado: R$ <span className="font-bold">10 mil*</span></p>
+                <p>No INSS você receberia a partir de 1 salário mínimo <span className="font-bold">(R$ 1.412,00)</span></p>
               </div>
             </div>
 
             <div className="bg-white flex flex-col p-4 space-y-4 rounded">
               <div className="flex items-center">
                 <MoneyBagIcon />
-                <h3 className="font-bold">Previdência Privada</h3>
+                <h3 className="font-bold">Poupança</h3>
               </div>
               <div className="flex flex-col">
-                <p>Rendimento mensal: R$ <span className="font-bold">10 mil*</span></p>
-                <p>Total acumulado: R$ <span className="font-bold">10 mil*</span></p>
+                <p>Rendimento mensal: R$ <span className="font-bold">6 mil*</span></p>
+                <p>Total acumulado: R$ <span className="font-bold">350 mil*</span></p>
               </div>
             </div>
 
