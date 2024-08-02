@@ -30,7 +30,7 @@ const Hero = () => {
   return (
     <div className="container bg-black flex flex-col items-center">
       {AcfData !== undefined && (
-        <div className="flex flex-col max-w-[600px] ">
+        <div className="flex flex-col max-w-[600px]">
           <div className="relative md:basis-[100%]">
             <Image
               src="/assets/images/header_image2.png"
@@ -44,7 +44,7 @@ const Hero = () => {
             />
             <div className="geeks absolute bottom-0 h-[31vh]"></div>
           </div>
-          <div className="font-inter z-10 -mt-20 flex flex-col px-4 md:-mt-0 md:basis-[100%] md:justify-center">
+          <div className="font-inter z-10 flex flex-col px-4 mt-[-250px]">
             <h2 className="mb-6 text-2xl font-semibold text-white">
               {parse(String(AcfData?.superior_title_text))}
             </h2>
