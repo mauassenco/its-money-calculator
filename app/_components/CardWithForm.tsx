@@ -564,7 +564,7 @@ export function CardWithForm() {
                     >
 
                       <Button className={cn(
-                        "ct h-[56px] w-[20%] max-w-[326px] bg-white text-black border border-black", {
+                        "ct h-[56px] w-[20%] max-w-[326px] bg-white text-black bxs-sm border border-highlight", {
                         'hidden': formStep == 0,
                         'w-0': formStep == 0,
                       })}

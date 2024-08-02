@@ -2,7 +2,7 @@ const MoneyBagIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="37"
+      width="27"
       height="48"
       fill="none"
       viewBox="0 0 37 48"

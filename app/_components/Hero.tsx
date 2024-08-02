@@ -28,9 +28,9 @@ const Hero = () => {
   const AcfData = useContext(AcfFieldsContext);
 
   return (
-    <div className="container  bg-black">
+    <div className="container bg-black flex flex-col items-center">
       {AcfData !== undefined && (
-        <div className="flex flex-col md:flex-row-reverse  md:pt-20">
+        <div className="flex flex-col max-w-[600px] ">
           <div className="relative md:basis-[100%]">
             <Image
               src="/assets/images/header_image2.png"

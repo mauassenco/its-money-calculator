@@ -167,43 +167,46 @@ export function SimulationResult() {
         <h2 className=" font-Big_Shoulders_Text text-black px-4 mt-10 text-[32px] font-bold uppercase leading-[40px]">Veja sua simulação:</h2>
       </div>
 
-      <TabsContent value="salary" className="ct border-[10px] border-highlight m-4 rounded">
+      <TabsContent value="salary" className="ct border-[10px] border-highlight m-4 mb-6 rounded">
         <Card >
           <CardContent className="ct p-0 bg-highlight space-y-3">
+            {/* INSS */}
             <div className="bg-white flex flex-col p-4 rounded">
-              <div className="flex items-center">
+              <div className="flex items-center gap-4 mb-2">
                 <MoneyBagIcon />
-                <h3 className="font-bold">Previdência Privada</h3>
+                <h3 className="font-bold text-lg">INSS</h3>
               </div>
               <div className="flex flex-col">
-                <p>Rendimento mensal: R$ <span className="font-bold">10 mil*</span></p>
-                <p>Total acumulado: R$ <span className="font-bold">10 mil*</span></p>
+                <p className="text-base">No INSS você receberia a partir de 1 salário mínimo até um teto estabelecido pelo governo.**<span className="font-bold">(R$ 1.412,00)</span></p>
               </div>
             </div>
 
-            <div className="bg-white flex flex-col p-4 space-y-4 rounded">
-              <div className="flex items-center">
+            {/* Poupança */}
+            <div className="bg-white flex flex-col p-4 rounded">
+              <div className="flex items-center gap-4 mb-2">
                 <MoneyBagIcon />
-                <h3 className="font-bold">INSS</h3>
+                <h3 className="font-bold text-lg">Poupança</h3>
               </div>
               <div className="flex flex-col">
-                <p>No INSS você receberia a partir de 1 salário mínimo <span className="font-bold">(R$ 1.412,00)</span></p>
+                <p className="text-base">Rendimento mensal: <span className="font-bold">R$ {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.SalarioPoupanca))} {checkNumberType(Number(simulationDataItems.SalarioPoupanca))}*</span> </p>
+                <p className="text-base">Total acumulado: <span className="font-bold">R$ {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.ValorPoupanca))} {checkNumberType(Number(simulationDataItems.ValorPoupanca))}*</span></p>
               </div>
             </div>
 
-            <div className="bg-white flex flex-col p-4 space-y-4 rounded">
-              <div className="flex items-center">
+            {/* Previdencia privada */}
+            <div className="bg-white flex flex-col p-4 rounded">
+              <div className="flex items-center gap-4 mb-2">
                 <MoneyBagIcon />
-                <h3 className="font-bold">Poupança</h3>
+                <h3 className="font-bold text-lg">Previdência Privada</h3>
               </div>
               <div className="flex flex-col">
-                <p>Rendimento mensal: R$ <span className="font-bold">6 mil*</span></p>
-                <p>Total acumulado: R$ <span className="font-bold">350 mil*</span></p>
+                <p className="text-base">Rendimento mensal: <span className="font-bold">R$ {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.SalarioPrevidencia))} {checkNumberType(Number(simulationDataItems.SalarioPrevidencia))}*</span> </p>
+                <p className="text-base">Total acumulado: <span className="font-bold">R$ {formatNumberWithSeparators(Number(sessionSimulations[sessionSimulations.length - 1].simulationData.ValorPrevidencia))} {checkNumberType(Number(simulationDataItems.ValorPrevidencia))}*</span></p>
               </div>
             </div>
 
             <div className=" bg-highlight">
-              <p className="leading-[18px] text-[12px]">{parse(String(AcfData?.tabs[1]?.dados_da_aba?.observacao))}</p>
+              <p className="leading-[18px] text-sm">{parse(String(AcfData?.tabs[0]?.dados_da_aba?.observacao))}</p>
             </div>
           </CardContent>
 
