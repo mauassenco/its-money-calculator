@@ -94,7 +94,7 @@ export function CardWithForm() {
     const ageLimit = 100
     const timeOfReceive = (100 - userRetireAge) * 12
 
-    const CDI = 0.1167;
+    const CDI = 0.1153;
     let taxaPrevidencia = 0;
     let taxa = 0;
 
@@ -124,8 +124,6 @@ export function CardWithForm() {
     const SalarioPoupanca = (ValorPoupanca * Math.pow((1 + taxaPoupanca), timeOfReceive)) /
       ((Math.pow((1 + taxaPoupanca), timeOfReceive) - 1) / taxaPoupanca)
 
-    console.log(SalarioPoupanca)
-
     const ValorAcumulado = userInitialInvestiment + userMonthlyInvestiment * periodo
 
     const simulationData = { ...formData, ValorPoupanca, ValorPrevidencia, SalarioPrevidencia, SalarioPoupanca, ValorAcumulado }
@@ -135,7 +133,6 @@ export function CardWithForm() {
     window.sessionStorage.setItem('Simulações', JSON.stringify(storedData));
     window.sessionStorage.setItem('Idade', JSON.stringify(userAge));
   }
-
 
   return (
     <>
@@ -270,6 +267,7 @@ export function CardWithForm() {
                                     {...field}
                                     className="mb-1 border-[1px] border-highlight bg-transparent placeholder:p-1 placeholder:text-[17px] placeholder:font-bold placeholder:text-[#C2C2C8] focus-visible:ring-[#0cc]  "
                                     type="email"
+                                  
                                   />
                                 </FormControl>
                                 <FormMessage />

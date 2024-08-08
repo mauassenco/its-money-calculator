@@ -132,6 +132,10 @@ body {
   }
 }
 
+body{
+  height: 100vh;
+}
+
 .bxd {
   box-shadow: -6px 8px 0px 0px #0cc;
 }

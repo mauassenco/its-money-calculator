@@ -81,7 +81,6 @@ export function SimulationResult() {
 
     let userMonthlyInvestiment = extractRealNumber(String(simulationDataItems.monthly_investment));
 
-    console.log(userMonthlyInvestiment)
 
     if (isNaN(userMonthlyInvestiment)) {
       let finvm = sessionStorage.getItem("First_MI")
@@ -94,7 +93,7 @@ export function SimulationResult() {
     const ageLimit = 100
     const timeOfReceive = (100 - userRetireAge) * 12
 
-    const CDI = 0.1167;
+    const CDI = 0.1153;
     let taxaPrevidencia = 0;
     let taxa = 0;
 
@@ -107,6 +106,7 @@ export function SimulationResult() {
       taxa = ((1 + CDI) * 1.04) - 1
       taxaPrevidencia = Math.pow((1 + taxa), (1 / 12)) - 1;
     }
+    
     const ValorPrevidencia =
       Math.abs(
         (userInitialInvestiment * Math.pow((1 + taxaPrevidencia), periodo)) -
